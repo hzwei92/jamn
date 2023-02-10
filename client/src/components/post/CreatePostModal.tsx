@@ -1,11 +1,11 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal } from "@ionic/react";
-import { EditorState } from "draft-js";
+import { Editor, EditorState } from "draft-js";
 import { close, send } from "ionicons/icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import useCreatePost from "../../hooks/post/useCreatePost";
 import { useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
-import Editor from "../editor/Editor";
+import EditorComponent from "../editor/Editor";
 
 const CreatePostModal = () => {
   const createPost = useCreatePost();
@@ -23,6 +23,7 @@ const CreatePostModal = () => {
 
 
   const modalRef = useRef<HTMLIonModalElement>(null);
+  const editorRef = useRef<Editor>(null);
 
   useEffect(() => {
     if (showCreatePostModal) {
@@ -41,6 +42,10 @@ const CreatePostModal = () => {
     setText(text1);
   }, [editorState]);
 
+  const handleOpen = () => {
+    editorRef.current?.focus();
+  }
+
   const handleClose = () => {
     setShowCreatePostModal(false);
     setCreationPostId(null);
@@ -54,7 +59,7 @@ const CreatePostModal = () => {
   }
 
   return (
-    <IonModal ref={modalRef} onWillDismiss={handleClose}>
+    <IonModal ref={modalRef} onDidPresent={handleOpen} onWillDismiss={handleClose}>
       <IonCard style={{
         margin: 0,
         height: '100%',
@@ -81,7 +86,7 @@ const CreatePostModal = () => {
             borderRadius: 5,
             padding: 20,
           }}>
-            <Editor/>
+            <EditorComponent editorRef={editorRef}/>
           </div>
           <div style={{
             margin: 15,

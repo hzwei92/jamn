@@ -5,8 +5,11 @@ import DraftEditor from "@draft-js-plugins/editor";
 import 'draft-js/dist/Draft.css';
 import { AppContext } from "../app/AppProvider";
 
-const Editor = () => {
-  const { editorState, setEditorState } = useContext(AppContext);
+interface EditorProps {
+  editorRef: any;
+}
+const Editor = ({ editorRef }: EditorProps) => {
+  const { editorState, setEditorState,  } = useContext(AppContext);
   
   const onChange = (editorState: EditorState) => {
     setEditorState(editorState);
@@ -15,6 +18,7 @@ const Editor = () => {
   return (
     <div className="editor">
       <DraftEditor
+        ref={editorRef}
         editorState={editorState}
         onChange={onChange}
         placeholder="What's happening?"

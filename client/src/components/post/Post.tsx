@@ -117,6 +117,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
         }}>
           <DraftEditor
             editorState={editorState}
+            onChange={() => {}}
             readOnly={true}
           />
         </div>
@@ -144,6 +145,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
               display: !!profile && !!pin && profile.id === pinRootPost?.profileId 
                 ? null
                 : 'none',
+              marginLeft: 5,
             }}>
               <IonIcon icon={close} size='small'/>
             </IonButton>
