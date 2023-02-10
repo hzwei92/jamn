@@ -23,7 +23,6 @@ const CreatePostModal = () => {
 
 
   const modalRef = useRef<HTMLIonModalElement>(null);
-  const editorRef = useRef<Editor>(null);
 
   useEffect(() => {
     if (showCreatePostModal) {
@@ -43,8 +42,7 @@ const CreatePostModal = () => {
   }, [editorState]);
 
   const handleOpen = () => {
-    editorRef.current?.focus();
-    (document.getElementsByClassName('DraftEditor-root')[0] as any).click();
+
   }
 
   const handleClose = () => {
@@ -87,7 +85,7 @@ const CreatePostModal = () => {
             borderRadius: 5,
             padding: 20,
           }}>
-            <EditorComponent editorRef={editorRef}/>
+            <EditorComponent />
           </div>
           <div style={{
             margin: 15,

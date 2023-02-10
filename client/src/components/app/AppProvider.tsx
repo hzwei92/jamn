@@ -1,8 +1,9 @@
 import { IonApp } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { EditorState } from "draft-js";
-import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react";
+import { createContext, Dispatch, RefObject, SetStateAction, useMemo, useRef, useState } from "react";
 import { PostDirection } from "../../enums";
+import Editor from '@draft-js-plugins/editor';
 
 export type AppContextState = {
   showLoginModal: boolean;
@@ -19,6 +20,8 @@ export type AppContextState = {
 
   editorState: EditorState;
   setEditorState: Dispatch<SetStateAction<EditorState>>;
+
+  editorRef: RefObject<Editor>;
 
   connectionPostIds: string[];
   setConnectionPostIds: Dispatch<SetStateAction<string[]>>;
@@ -42,8 +45,9 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     return EditorState.createEmpty();
   });
 
-  const [connectionPostIds, setConnectionPostIds] = useState<string[]>([]);
+  const editorRef = useRef<Editor>(null);
 
+  const [connectionPostIds, setConnectionPostIds] = useState<string[]>([]);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -57,12 +61,22 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     creationDirection,
     setCreationDirection,
     editorState,
+    editorRef,
     setEditorState,
     connectionPostIds,
     setConnectionPostIds,
     isDarkMode,
     setIsDarkMode,
-  }), [showLoginModal, showCreatePostModal, creationPostId, creationDirection, editorState, connectionPostIds, isDarkMode]);
+  }), [
+    showLoginModal, 
+    showCreatePostModal, 
+    creationPostId, 
+    creationDirection, 
+    editorState, 
+    editorRef, 
+    connectionPostIds, 
+    isDarkMode
+  ]);
 
   return (
     <IonApp>

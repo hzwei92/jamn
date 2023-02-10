@@ -9,13 +9,16 @@ import { AppContext } from "../app/AppProvider";
 
 
 const CreatePostFab = () => {
-  const { setShowCreatePostModal, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
+  const { setShowCreatePostModal, connectionPostIds, setConnectionPostIds, editorRef } = useContext(AppContext);
 
   const profile = useAppSelector(selectCurrentProfile);
 
   const handleCreatePostClick = () => {
     setConnectionPostIds([]);
     setShowCreatePostModal(true);
+    setTimeout(() => {
+      editorRef.current?.focus();
+    }, 100);
   }
 
   const handleCancelClick = () => {
