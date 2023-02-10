@@ -1,5 +1,5 @@
 import { EditorState } from "draft-js";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DraftEditor from "@draft-js-plugins/editor";
 
 import 'draft-js/dist/Draft.css';
@@ -14,7 +14,7 @@ const Editor = ({ editorRef }: EditorProps) => {
   const onChange = (editorState: EditorState) => {
     setEditorState(editorState);
   };
-
+  
   return (
     <div className="editor">
       <DraftEditor
@@ -22,6 +22,7 @@ const Editor = ({ editorRef }: EditorProps) => {
         editorState={editorState}
         onChange={onChange}
         placeholder="What's happening?"
+        spellCheck={true}
       />
     </div>
   );

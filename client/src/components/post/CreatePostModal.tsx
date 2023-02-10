@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal, isPlatform } from "@ionic/react";
 import { Editor, EditorState } from "draft-js";
 import { close, closeOutline, send, sendOutline } from "ionicons/icons";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -44,6 +44,7 @@ const CreatePostModal = () => {
 
   const handleOpen = () => {
     editorRef.current?.focus();
+    (document.getElementsByClassName('DraftEditor-root')[0] as any).click();
   }
 
   const handleClose = () => {
