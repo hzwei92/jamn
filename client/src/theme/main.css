@@ -1,0 +1,13 @@
+ion-radio {
+  --border-radius: 4px;
+  --inner-border-radius: 4px;
+
+}
+
+ion-radio.ios {
+  width: 20px;
+  height: 20px;
+
+  border: 2px solid;
+  border-radius: 4px;
+}

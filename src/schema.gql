@@ -1,0 +1,87 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Link {
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  nextPost: Post!
+  nextPostId: String!
+  prevPost: Post!
+  prevPostId: String!
+  updateDate: DateTime!
+  upvotes: Int!
+}
+
+type Mutation {
+  createLink(nextPostId: String!, prevPostId: String!): Link!
+  createPin(leafPostId: String!, rootPostId: String!): Pin!
+  createPost(contextDirection: String, contextPostId: String, text: String!): Post!
+  getCurrentProfile: Profile!
+  getLeafPins(postId: String!): [Pin!]!
+  getNextLinks(postId: String!): [Link!]!
+  getPosts: [Post!]!
+  getPrevLinks(postId: String!): [Link!]!
+  getRootPins(postId: String!): [Pin!]!
+  login(credential: String!): ProfileWithTokens!
+  refreshAccessToken(refreshToken: String!): ProfileWithTokens!
+}
+
+type Pin {
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  leafPost: Post!
+  leafPostId: String!
+  rootPost: Post!
+  rootPostId: String!
+  updateDate: DateTime!
+  upvotes: Int!
+}
+
+type Post {
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  leafCount: Int!
+  name: String
+  nextCount: Int!
+  prevCount: Int!
+  profile: Profile!
+  profileId: String!
+  profileIndex: Int!
+  rootCount: Int!
+  text: String!
+  updateDate: DateTime!
+  upvotes: Int!
+}
+
+type Profile {
+  balance: Float!
+  color: String!
+  createDate: DateTime!
+  deleteDate: DateTime
+  email: String!
+  id: String!
+  name: String!
+  palette: String!
+  postCount: Int!
+  text: String!
+  updateDate: DateTime!
+}
+
+type ProfileWithTokens {
+  accessToken: String!
+  profile: Profile!
+  refreshToken: String!
+}
+
+type Query {
+  getProfile(id: String!): Profile!
+}

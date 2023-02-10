@@ -1,0 +1,45 @@
+
+version: "3"
+services:
+  postgres:
+    container_name: jamn_postgres_1
+    image: postgres:15.1
+    networks:
+      - postgres
+    volumes:
+      - /var/lib/postgres:/data/postgres
+    env_file:
+      - docker.env
+ 
+  pgadmin:
+    container_name: jamn_pgadmin_1
+    image: dpage/pgadmin4:6.18
+    networks:
+      - postgres
+    ports:
+      - 8080:80
+    volumes:
+      - /var/lib/pgadmin:/root/.pgadmin
+    env_file:
+      - docker.env
+ 
+  jamn-api:
+    container_name: jamn_api_1
+    build: .
+    networks:
+      - postgres
+    ports:
+      - 9000:9000
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    command: yarn start:dev
+    volumes:
+      - ./:/src
+      - exclude:/src/node_modules
+volumes:
+  exclude: {}
+networks:
+  postgres:
+    driver: bridge
