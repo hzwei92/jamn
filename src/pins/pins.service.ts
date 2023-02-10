@@ -41,7 +41,10 @@ export class PinsService {
     return this.pinsRepository.find({
       where: {
         leafPostId: postId,
-      }
+      },
+      order: {
+        createDate: 'DESC',
+      },
     });
   }
 
@@ -49,7 +52,10 @@ export class PinsService {
     return this.pinsRepository.find({
       where: {
         rootPostId: postId,
-      }
+      },
+      order: {
+        createDate: 'DESC',
+      },
     });
   }
 }

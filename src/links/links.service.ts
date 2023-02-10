@@ -41,6 +41,9 @@ export class LinksService {
     return this.linksRepository.find({
       where: {
         nextPostId: postId,
+      },
+      order: {
+        createDate: 'DESC',
       }
     });
   }
@@ -49,6 +52,9 @@ export class LinksService {
     return this.linksRepository.find({
       where: {
         prevPostId: postId,
+      },
+      order: {
+        createDate: 'DESC',
       }
     });
   }

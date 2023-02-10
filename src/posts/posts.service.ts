@@ -30,7 +30,8 @@ export class PostsService {
     return this.postsRepository.find({
       order: {
         createDate: 'DESC',
-      }
+      },
+      take: 42,
     });
   }
 
