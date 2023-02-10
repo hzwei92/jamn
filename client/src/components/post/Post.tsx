@@ -10,6 +10,8 @@ import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
 import { getTimeString } from "../../utils";
+import DraftEditor from '@draft-js-plugins/editor';
+import { ContentState, EditorState } from "draft-js";
 
 interface PostProps {
   entryId: string;
@@ -41,6 +43,9 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
 
   const time = new Date(post.createDate).getTime();
   const timeString = getTimeString(time);
+
+  const contentState = ContentState.createFromText(post.text);
+  const editorState = EditorState.createWithContent(contentState);
 
   return (
     <IonCard style={{
@@ -88,7 +93,10 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             ? 'white'
             : 'black',
         }}>
-          {post.text}
+          <DraftEditor
+            editorState={editorState}
+            readOnly={true}
+          />
         </div>
       </div>
       <div style={{
