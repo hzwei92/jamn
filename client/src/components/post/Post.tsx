@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { close, linkOutline, pushOutline, settingsOutline } from "ionicons/icons";
+import { close, closeOutline, linkOutline, pushOutline, settingsOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
@@ -142,12 +142,12 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
               <IonIcon icon={pushOutline} size='small'/>
             </IonButton>
             <IonButton onClick={handleDeletePinClick} style={{
-              display: !!profile && !!pin && profile.id === pinRootPost?.profileId 
+              display: !!profile && !!pin && profile.id === pinRootPost?.profileId && depth !== 0
                 ? null
                 : 'none',
               marginLeft: 5,
             }}>
-              <IonIcon icon={close} size='small'/>
+              <IonIcon icon={closeOutline} size='small'/>
             </IonButton>
           </IonButtons>
         </div>

@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { add, arrowForwardOutline } from "ionicons/icons";
+import { add, addOutline, arrowForwardOutline } from "ionicons/icons";
 import { useContext, useEffect } from "react";
 import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
@@ -126,7 +126,7 @@ const EntryNextList = ({ entry, post, depth }: EntryNextListProps) => {
           backgroundColor: '#f4900c',
           color: 'white',
         }}>
-          <IonIcon icon={add} />
+          <IonIcon icon={addOutline} />
         </IonButton>
         <IonButton disabled={connectionPostIds.length < 1} onClick={handleConnectClick} style={{
           display: connectionPostIds.length > 0 ? null : 'none',

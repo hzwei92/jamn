@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { add, arrowDownCircleOutline, arrowDownOutline } from "ionicons/icons";
+import { add, addOutline, arrowDownCircleOutline, arrowDownOutline } from "ionicons/icons";
 import { useContext, useEffect } from "react";
 import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
@@ -125,7 +125,7 @@ const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
           backgroundColor: '#f4900c',
           color: 'white',
         }}>
-          <IonIcon icon={add} />
+          <IonIcon icon={addOutline} />
         </IonButton>
         <IonButton disabled={!profile || post.profileId !== profile.id} onClick={handleConnectClick} style={{
           display: connectionPostIds.length === 1 ? null : 'none',

@@ -1,5 +1,5 @@
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
-import { add, close } from "ionicons/icons";
+import { add, addOutline, close } from "ionicons/icons";
 import { useContext } from "react";
 import { selectPostById } from "../../redux/postSlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
@@ -51,7 +51,7 @@ const CreatePostFab = () => {
             : null,
         }}
       >
-        <IonIcon icon={add} style={{
+        <IonIcon icon={addOutline} style={{
           color: 'white'
         }}/>
       </IonFabButton>
