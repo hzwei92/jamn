@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal } from "@ionic/react";
 import { Editor, EditorState } from "draft-js";
-import { close, send } from "ionicons/icons";
+import { close, closeOutline, send, sendOutline } from "ionicons/icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import useCreatePost from "../../hooks/post/useCreatePost";
 import { useAppSelector } from "../../redux/store";
@@ -70,7 +70,7 @@ const CreatePostModal = () => {
           }}>
           <IonButtons>
             <IonButton onClick={handleClose}>
-              <IonIcon icon={close} />
+              <IonIcon icon={closeOutline} />
             </IonButton>
           </IonButtons>
           <IonButton color='warning' disabled={text.length > 420} onClick={handleSubmit}>
