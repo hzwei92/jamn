@@ -3,7 +3,7 @@ import { POST_FIELDS } from "../../fragments/postFragments";
 import { PostDirection } from "../../enums";
 
 const CREATE_POST = gql`
-  mutation CreatePost($text: String!, $contextPostId: String!, $contextDirection: String!) {
+  mutation CreatePost($text: String!, $contextPostId: String, $contextDirection: String) {
     createPost(text: $text, contextPostId: $contextPostId, contextDirection: $contextDirection) {
       ...PostFields
     }
