@@ -1,5 +1,7 @@
 import { PostDirection } from "../../enums";
 import { selectEntryById } from "../../redux/entrySlice";
+import { selectLinkById } from "../../redux/linkSlice";
+import { selectPinById } from "../../redux/pinSlice";
 import { selectPostById } from "../../redux/postSlice";
 import { useAppSelector } from "../../redux/store";
 import Post from "../post/Post";
@@ -18,7 +20,10 @@ const Entry = ({ entryId, depth }: EntryProps) => {
   const entry = useAppSelector(state => selectEntryById(state, entryId));
   const post = useAppSelector(state => selectPostById(state, entry?.postId ?? null));
 
-  if (!entry || !post) return null;
+  const link = useAppSelector(state => selectLinkById(state, entry?.linkId ?? null));
+  const pin = useAppSelector(state => selectPinById(state, entry?.pinId ?? null));
+
+  if (!entry || !post || link?.deleteDate || pin?.deleteDate) return null;
 
   return (
     <div>

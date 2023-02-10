@@ -23,6 +23,7 @@ type Mutation {
   createLink(nextPostId: String!, prevPostId: String!): Link!
   createPin(leafPostId: String!, rootPostId: String!): Pin!
   createPost(contextDirection: String, contextPostId: String, text: String!): Post!
+  deletePin(pinId: String!): Pin!
   getCurrentProfile: Profile!
   getLeafPins(postId: String!): [Pin!]!
   getNextLinks(postId: String!): [Link!]!

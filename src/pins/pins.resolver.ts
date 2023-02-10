@@ -1,11 +1,11 @@
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { CurrentProfile, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Post } from 'src/posts/post.model';
 import { PostsService } from 'src/posts/posts.service';
 import { Pin } from './pin.model';
 import { PinsService } from './pins.service';
-
+import { Profile as ProfileEntity } from 'src/profiles/profile.entity';
 @Resolver(() => Pin)
 export class PinsResolver {
   constructor(
@@ -57,4 +57,19 @@ export class PinsResolver {
     }
     return this.pinsService.createPin(rootPost, leafPost);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Pin, { name: 'deletePin' })
+  async deletePin(
+    @CurrentProfile() profile: ProfileEntity,
+    @Args('pinId') pinId: string,
+  ) {
+    const pin = await this.pinsService.getPinById(pinId);
+    if (!pin) {
+      throw new BadRequestException('pinId is invalid');
+    }
+
+    return this.pinsService.deletePin(profile, pin);
+  }
+
 }

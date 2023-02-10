@@ -31,8 +31,8 @@ export class LinksService {
       link.nextPostId = nextPost.id;
       link = await this.linksRepository.save(link);
 
-      await this.postsService.incrementNextCount(prevPost.id);
-      await this.postsService.incrementPrevCount(nextPost.id);
+      await this.postsService.incrementNextCount(prevPost.id, 1);
+      await this.postsService.incrementPrevCount(nextPost.id, 1);
     }
     return link;
   }

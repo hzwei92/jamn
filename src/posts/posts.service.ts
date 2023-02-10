@@ -71,19 +71,19 @@ export class PostsService {
     return post;
   }
 
-  async incrementPrevCount(postId: string): Promise<void> {
-    await this.postsRepository.increment({ id: postId }, 'prevCount', 1);
+  async incrementPrevCount(postId: string, amount: number): Promise<void> {
+    await this.postsRepository.increment({ id: postId }, 'prevCount', amount);
   }
 
-  async incrementNextCount(postId: string): Promise<void> {
-    await this.postsRepository.increment({ id: postId }, 'nextCount', 1);
+  async incrementNextCount(postId: string, amount: number): Promise<void> {
+    await this.postsRepository.increment({ id: postId }, 'nextCount', amount);
   }
 
-  async incrementRootCount(postId: string): Promise<void> {
-    await this.postsRepository.increment({ id: postId }, 'rootCount', 1);
+  async incrementRootCount(postId: string, amount: number): Promise<void> {
+    await this.postsRepository.increment({ id: postId }, 'rootCount', amount);
   }
 
-  async incrementLeafCount(postId: string): Promise<void> {
-    await this.postsRepository.increment({ id: postId }, 'leafCount', 1);
+  async incrementLeafCount(postId: string, amount: number): Promise<void> {
+    await this.postsRepository.increment({ id: postId }, 'leafCount', amount);
   }
 }
