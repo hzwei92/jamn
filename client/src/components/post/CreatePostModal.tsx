@@ -8,14 +8,14 @@ import { useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import EditorComponent from "../editor/Editor";
 
+import DraftEditor from '@draft-js-plugins/editor';
+
 const CreatePostModal = () => {
   const { 
     showCreatePostModal,
     setShowCreatePostModal,
     creationEntryId,
     creationDirection,
-    editorState,
-    setEditorState,
   } = useContext(AppContext);
 
   const creationEntry = useAppSelector(state => selectEntryById(state, creationEntryId));
@@ -23,6 +23,8 @@ const CreatePostModal = () => {
   const createPost = useCreatePost();
 
   const modalRef = useRef<HTMLIonModalElement>(null);
+
+  const editorRef = useRef<DraftEditor>(null);
 
   useEffect(() => {
     if (showCreatePostModal) {
@@ -35,8 +37,14 @@ const CreatePostModal = () => {
 
   const [count, setCount] = useState(0);
 
-  const handleOpen = () => {
 
+  const [editorState, setEditorState] = useState(() => {
+    return EditorState.createEmpty();
+  });
+
+
+  const handleOpen = () => {
+    editorRef.current?.focus();
   }
 
   const handleClose = () => {
@@ -87,7 +95,7 @@ const CreatePostModal = () => {
             borderRadius: 5,
             padding: 20,
           }}>
-            <EditorComponent onChange={handleChange}/>
+            <EditorComponent editorState={editorState} onChange={handleChange} editorRef={editorRef}/>
           </div>
           <div style={{
             margin: 15,

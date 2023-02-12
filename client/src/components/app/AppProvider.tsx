@@ -18,11 +18,6 @@ export type AppContextState = {
   creationDirection: PostDirection | null; 
   setCreationDirection: Dispatch<SetStateAction<PostDirection | null>>;
 
-  editorState: EditorState;
-  setEditorState: Dispatch<SetStateAction<EditorState>>;
-
-  editorRef: RefObject<Editor>;
-
   connectionPostIds: string[];
   setConnectionPostIds: Dispatch<SetStateAction<string[]>>;
 
@@ -41,12 +36,6 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [creationDirection, setCreationDirection] = useState<PostDirection | null>(null);
 
-  const [editorState, setEditorState] = useState(() => {
-    return EditorState.createEmpty();
-  });
-
-  const editorRef = useRef<Editor>(null);
-
   const [connectionPostIds, setConnectionPostIds] = useState<string[]>([]);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -60,9 +49,6 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setCreationEntryId,
     creationDirection,
     setCreationDirection,
-    editorState,
-    editorRef,
-    setEditorState,
     connectionPostIds,
     setConnectionPostIds,
     isDarkMode,
@@ -71,9 +57,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     showLoginModal, 
     showCreatePostModal, 
     creationEntryId, 
-    creationDirection, 
-    editorState, 
-    editorRef, 
+    creationDirection,
     connectionPostIds, 
     isDarkMode
   ]);

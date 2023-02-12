@@ -1,17 +1,16 @@
 import { EditorState } from "draft-js";
-import { useContext, useEffect, useState } from "react";
+import { RefObject } from "react";
 import DraftEditor from "@draft-js-plugins/editor";
 
 import 'draft-js/dist/Draft.css';
-import { AppContext } from "../app/AppProvider";
 
 interface EditorProps {
+  editorRef: RefObject<DraftEditor>;
+  editorState: EditorState;
   onChange: (editorState: EditorState) => void;
 }
 
-const Editor = ({ onChange }: EditorProps) => {
-  const { editorState, editorRef } = useContext(AppContext);
-
+const Editor = ({ editorState, onChange, editorRef }: EditorProps) => {
   return (
     <div className="editor">
       <DraftEditor

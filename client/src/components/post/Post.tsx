@@ -17,6 +17,8 @@ import { selectEntryById } from "../../redux/entrySlice";
 import { selectPinById } from "../../redux/pinSlice";
 import useDeletePin from "../../hooks/pin/useDeletePin";
 
+import 'draft-js/dist/Draft.css';
+
 interface PostProps {
   entryId: string;
   postId: string;
