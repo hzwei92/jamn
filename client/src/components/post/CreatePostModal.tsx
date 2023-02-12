@@ -35,12 +35,6 @@ const CreatePostModal = () => {
 
   const [text, setText] = useState('');
 
-  useEffect(() => {
-    const contentState = editorState.getCurrentContent();
-    const text1 = contentState.getPlainText('\n');
-    setText(text1);
-  }, [editorState]);
-
   const handleOpen = () => {
 
   }
@@ -51,8 +45,17 @@ const CreatePostModal = () => {
   };
 
   const handleSubmit = () => {
-    createPost(text, creationEntry?.postId ?? null, creationDirection);
+    const contentState = editorState.getCurrentContent();
+    const text1 = contentState.getPlainText('\n');
+    createPost(text1, creationEntry?.postId ?? null, creationDirection);
     handleClose();
+  }
+
+  const handleChange = (editorState: EditorState) => {
+    setEditorState(editorState);
+    const contentState = editorState.getCurrentContent();
+    const text1 = contentState.getPlainText('\n');
+    setText(text1);
   }
 
   return (
@@ -83,7 +86,7 @@ const CreatePostModal = () => {
             borderRadius: 5,
             padding: 20,
           }}>
-            <EditorComponent />
+            <EditorComponent onChange={handleChange}/>
           </div>
           <div style={{
             margin: 15,
