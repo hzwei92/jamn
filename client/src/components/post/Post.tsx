@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { close, closeOutline, linkOutline, pushOutline, settingsOutline } from "ionicons/icons";
+import { closeOutline, linkOutline, pushOutline, settingsOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';

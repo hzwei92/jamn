@@ -6,7 +6,6 @@ import useCreatePost from "../../hooks/post/useCreatePost";
 import { selectEntryById } from "../../redux/entrySlice";
 import { useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
-import EditorComponent from "../editor/Editor";
 
 import DraftEditor from '@draft-js-plugins/editor';
 
@@ -55,14 +54,14 @@ const CreatePostModal = () => {
 
   const handleSubmit = () => {
     const contentState = editorState.getCurrentContent();
-    const text1 = contentState.getPlainText('\n');
-    createPost(text1, creationEntry?.postId ?? null, creationDirection);
+    const text = contentState.getPlainText('\n');
+    createPost(text, creationEntry?.postId ?? null, creationDirection);
     handleClose();
   }
 
-  const handleChange = (editorState: EditorState) => {
-    setEditorState(editorState);
-    const contentState = editorState.getCurrentContent();
+  const handleChange = (newState: EditorState) => {
+    setEditorState(newState);
+    const contentState = newState.getCurrentContent();
     const text = contentState.getPlainText('\n');
     setCount(text.length);
   }
@@ -95,7 +94,12 @@ const CreatePostModal = () => {
             borderRadius: 5,
             padding: 20,
           }}>
-            <EditorComponent editorState={editorState} onChange={handleChange} editorRef={editorRef}/>
+            <DraftEditor
+              ref={editorRef}
+              editorState={editorState} 
+              onChange={handleChange} 
+              spellCheck={true}
+            />
           </div>
           <div style={{
             margin: 15,
