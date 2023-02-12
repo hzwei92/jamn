@@ -1,6 +1,9 @@
 import { gql, useMutation } from "@apollo/client";
 import { POST_FIELDS } from "../../fragments/postFragments";
 import { PostDirection } from "../../enums";
+import { useAppDispatch } from "../../redux/store";
+import { setIsInit, setIsValid } from "../../redux/authSlice";
+import { useIonToast } from "@ionic/react";
 
 const CREATE_POST = gql`
   mutation CreatePost($text: String!, $contextPostId: String, $contextDirection: String) {
@@ -12,11 +15,23 @@ const CREATE_POST = gql`
 `;
 
 const useCreatePost = () => {
+  const dispatch = useAppDispatch();
+
+  const [present] = useIonToast();
+
   const [create] = useMutation(CREATE_POST, {
     onError: (err) => {
-      console.error(err);
+      present('Error creating post: ' + err.message, 4200);
+      if (err.message === 'Unauthorized') {
+        dispatch(setIsInit(false));
+        dispatch(setIsValid(false));
+      }
+      else {
+        console.error(err);
+      }
     },
     onCompleted: (data) => {
+      present('Post created', 4200);
       console.log(data);
     },
   });

@@ -46,12 +46,11 @@ const Portal = () => {
       dispatch(pushPortalSlice(slice));
     }
   });
-
+  
   useEffect(() => {
     getPosts();
   }, []);
 
-  const { connectionPostIds, isDarkMode } = useContext(AppContext);
 
   const slice = useAppSelector(selectPortalSlice);
 

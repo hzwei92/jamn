@@ -1,6 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
+import { useIonToast } from "@ionic/react";
 import { LINK_FIELDS } from "../../fragments/linkFragments";
 import { FULL_POST_FIELDS } from "../../fragments/postFragments";
+import { setIsInit, setIsValid } from "../../redux/authSlice";
 import { mergeLinks } from "../../redux/linkSlice";
 import { useAppDispatch } from "../../redux/store";
 import { Link } from "../../types/link";
@@ -27,11 +29,22 @@ interface UseCreateLinkProps {
 const useCreateLink = ({ onCompleted }: UseCreateLinkProps) => {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const [create] = useMutation(CREATE_LINK, {
     onError: (err) => {
-      console.error(err);
+      present('Error creating link: ' + err.message, 4200)
+      if (err.message === 'Unauthorized') {
+        dispatch(setIsInit(false));
+        dispatch(setIsValid(false));
+      }
+      else {
+        console.error(err);
+      }
     },
     onCompleted: (data) => {
+      present('Link created', 4200);
+      
       console.log(data);
 
       dispatch(mergeLinks([data.createLink]));

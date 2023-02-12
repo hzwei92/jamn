@@ -66,7 +66,9 @@ const useRefreshAccessToken = () => {
   };
 
   const refreshTokenInterval = () => {
-    const interval = setInterval(refreshToken, REFRESH_ACCESS_TOKEN_TIME);
+    const interval = setInterval(() => {
+      refreshToken();
+    }, REFRESH_ACCESS_TOKEN_TIME);
     
     dispatch(setRefreshInterval(interval));
   }

@@ -3,6 +3,7 @@ import { PROFILE_FIELDS } from "../../fragments/profileFragments";
 import { setIsDone } from "../../redux/authSlice";
 import { mergeProfiles, setCurrentProfileId } from "../../redux/profileSlice";
 import { useAppDispatch } from "../../redux/store";
+import useRefreshAccessToken from "../auth/useRefreshToken";
 
 const GET_CURRENT_PROFILE = gql`
   mutation GetCurrentProfile {
@@ -16,12 +17,16 @@ const GET_CURRENT_PROFILE = gql`
 const useGetCurrentProfile = () => {
   const dispatch = useAppDispatch();
 
+  const { refreshTokenInterval } = useRefreshAccessToken();
+
   const [get] = useMutation(GET_CURRENT_PROFILE, {
     onError: (err) => {
       console.error(err);
     },
     onCompleted: (data) => {
       console.log(data);
+
+      refreshTokenInterval();
 
       dispatch(mergeProfiles([data.getCurrentProfile]));
 
