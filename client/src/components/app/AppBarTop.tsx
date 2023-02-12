@@ -1,18 +1,32 @@
 import { IonButton, IonButtons, IonCard, IonIcon, IonInput, IonItem } from "@ionic/react"
-import { personCircle, search } from "ionicons/icons";
+import { arrowBack, arrowBackOutline, arrowForward, arrowForwardOutline, personCircle, search, searchOutline } from "ionicons/icons";
 import { useContext } from "react";
+import { back, forward, selectPortalIndex, selectPortalStack } from "../../redux/portalSlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
-import { useAppSelector } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "./AppProvider";
 
 
 const AppBarTop = () => {
+  const dispatch = useAppDispatch();
+
   const { isDarkMode, setshowLoginModal } = useContext(AppContext);
 
   const profile = useAppSelector(selectCurrentProfile);
 
+  const stack = useAppSelector(selectPortalStack);
+  const index = useAppSelector(selectPortalIndex);
+
   const handleLoginClick = () => {
     setshowLoginModal(true);
+  }
+
+  const handleBackClick = () => {
+    dispatch(back());
+  }
+
+  const handleForwardClick = () => {
+    dispatch(forward());
   }
 
   return (
@@ -31,27 +45,25 @@ const AppBarTop = () => {
       justifyContent: 'space-between',
       boxShadow: 'none',
     }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        padding: 5,
+      <IonButtons style={{
+        marginLeft: 5,
       }}>
-        <IonButtons>
-          <IonButton>
-            <IonIcon icon={search} />
-          </IonButton>
-        </IonButtons>
-        <IonInput
-          placeholder="Search"
-        />
-      </div>
-      <div style={{
+        <IonButton disabled={index <= 0}onClick={handleBackClick}>
+          <IonIcon icon={arrowBackOutline} />
+        </IonButton>
+        <IonButton disabled={index >= stack.length - 1} onClick={handleForwardClick}>
+          <IonIcon icon={arrowForwardOutline} />
+        </IonButton>
+        <IonButton>
+          <IonIcon icon={searchOutline} />
+        </IonButton>
+      </IonButtons>
+      <IonInput style={{
+        marginRight: 10,
         display: 'flex',
-        flexDirection: 'row',
-        height: '100%',
-        justifyContent: 'right',
-      }}>
-      </div>
+      }}
+        placeholder="Search"
+      />
     </IonCard>
   );
 }
