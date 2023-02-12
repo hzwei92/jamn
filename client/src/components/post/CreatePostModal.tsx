@@ -33,7 +33,7 @@ const CreatePostModal = () => {
     }
   }, [showCreatePostModal]);
 
-  const [text, setText] = useState('');
+  const [count, setCount] = useState(0);
 
   const handleOpen = () => {
 
@@ -42,6 +42,7 @@ const CreatePostModal = () => {
   const handleClose = () => {
     setShowCreatePostModal(false);
     setEditorState(EditorState.createEmpty());
+    setCount(0);
   };
 
   const handleSubmit = () => {
@@ -54,8 +55,8 @@ const CreatePostModal = () => {
   const handleChange = (editorState: EditorState) => {
     setEditorState(editorState);
     const contentState = editorState.getCurrentContent();
-    const text1 = contentState.getPlainText('\n');
-    setText(text1);
+    const text = contentState.getPlainText('\n');
+    setCount(text.length);
   }
 
   return (
@@ -73,7 +74,7 @@ const CreatePostModal = () => {
               <IonIcon icon={closeOutline} />
             </IonButton>
           </IonButtons>
-          <IonButton color='warning' disabled={text.length > 420} onClick={handleSubmit}>
+          <IonButton color='warning' disabled={count > 420} onClick={handleSubmit}>
             <IonIcon icon={send} style={{
               color: 'white'
             }}/>
@@ -91,11 +92,11 @@ const CreatePostModal = () => {
           <div style={{
             margin: 15,
             marginLeft: 20,
-            color: text.length > 420
+            color: count > 420
               ? 'red'
               : undefined,
           }}>
-            { text.length } / 420
+            { count } / 420
           </div>
         </IonCardContent>
       </IonCard>
