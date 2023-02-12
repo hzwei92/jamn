@@ -90,7 +90,7 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
     dispatch(mergeEntries([entry1]));
   }, [entry.shouldFetch]);
 
-  const { setShowCreatePostModal, setCreationPostId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
+  const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
   const profile = useAppSelector(selectCurrentProfile);
 
@@ -102,7 +102,7 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
   }
 
   const handleCreateClick = () => {
-    setCreationPostId(post.id);
+    setCreationEntryId(entry.id);
     setCreationDirection(PostDirection.PREV);
     setShowCreatePostModal(true);
   };

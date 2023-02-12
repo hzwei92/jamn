@@ -91,7 +91,7 @@ const EntryNextList = ({ entry, post, depth }: EntryNextListProps) => {
   }, [entry.shouldFetch]);
 
 
-  const { setShowCreatePostModal, setCreationPostId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
+  const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
   const profile = useAppSelector(selectCurrentProfile);
 
@@ -103,7 +103,7 @@ const EntryNextList = ({ entry, post, depth }: EntryNextListProps) => {
   }
 
   const handleCreateClick = () => {
-    setCreationPostId(post.id);
+    setCreationEntryId(entry.id);
     setCreationDirection(PostDirection.NEXT);
     setShowCreatePostModal(true);
   };

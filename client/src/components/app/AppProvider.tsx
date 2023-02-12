@@ -12,8 +12,8 @@ export type AppContextState = {
   showCreatePostModal: boolean;
   setShowCreatePostModal: Dispatch<SetStateAction<boolean>>;
 
-  creationPostId: string | null;
-  setCreationPostId: Dispatch<SetStateAction<string | null>>;
+  creationEntryId: string | null;
+  setCreationEntryId: Dispatch<SetStateAction<string | null>>;
 
   creationDirection: PostDirection | null; 
   setCreationDirection: Dispatch<SetStateAction<PostDirection | null>>;
@@ -37,7 +37,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
 
-  const [creationPostId, setCreationPostId] = useState<string | null>(null);
+  const [creationEntryId, setCreationEntryId] = useState<string | null>(null);
 
   const [creationDirection, setCreationDirection] = useState<PostDirection | null>(null);
 
@@ -56,8 +56,8 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setshowLoginModal,
     showCreatePostModal,
     setShowCreatePostModal,
-    creationPostId,
-    setCreationPostId,
+    creationEntryId,
+    setCreationEntryId,
     creationDirection,
     setCreationDirection,
     editorState,
@@ -70,7 +70,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   }), [
     showLoginModal, 
     showCreatePostModal, 
-    creationPostId, 
+    creationEntryId, 
     creationDirection, 
     editorState, 
     editorRef, 

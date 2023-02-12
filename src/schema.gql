@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CreatePostResult {
+  leafPin: Pin
+  nextLink: Link
+  post: Post!
+  prevLink: Link
+  rootPin: Pin
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -22,7 +30,7 @@ type Link {
 type Mutation {
   createLink(nextPostId: String!, prevPostId: String!): Link!
   createPin(leafPostId: String!, rootPostId: String!): Pin!
-  createPost(contextDirection: String, contextPostId: String, text: String!): Post!
+  createPost(contextDirection: String, contextPostId: String, text: String!): CreatePostResult!
   deletePin(pinId: String!): Pin!
   getCurrentProfile: Profile!
   getLeafPins(postId: String!): [Pin!]!

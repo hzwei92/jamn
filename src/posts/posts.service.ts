@@ -35,7 +35,7 @@ export class PostsService {
     });
   }
 
-  async createPost(profile: Profile, text: string, contextPostId: string | null, contextDirection: string | null): Promise<Post> {
+  async createPost(profile: Profile, text: string, contextPostId: string | null, contextDirection: string | null) {
     let post = new Post();
     post.profileId = profile.id;
     post.profileIndex = profile.postCount;
@@ -43,6 +43,11 @@ export class PostsService {
     post = await this.postsRepository.save(post);
 
     await this.profilesService.incrementPostCount(profile.id);
+
+    let prevLink = null;
+    let nextLink = null;
+    let rootPin = null;
+    let leafPin = null;
 
     if (contextPostId && contextDirection) {
       const contextPost = await this.postsRepository.findOne({
@@ -55,20 +60,26 @@ export class PostsService {
       }
 
       if (contextDirection === PostDirection.PREV) {
-        await this.linksService.createLink(post, contextPost);
+        prevLink = await this.linksService.createLink(post, contextPost);
       }
       else if (contextDirection === PostDirection.NEXT) {
-        await this.linksService.createLink(contextPost, post);
+        nextLink = await this.linksService.createLink(contextPost, post);
       }
       else if (contextDirection === PostDirection.ROOT) {
-        await this.pinsService.createPin(post, contextPost);
+        rootPin = await this.pinsService.createPin(post, contextPost);
       }
       else if (contextDirection === PostDirection.LEAF) {
-        await this.pinsService.createPin(contextPost, post);
+        leafPin = await this.pinsService.createPin(contextPost, post);
       }
     }
 
-    return post;
+    return {
+      post,
+      prevLink,
+      nextLink,
+      rootPin,
+      leafPin,
+    };
   }
 
   async incrementPrevCount(postId: string, amount: number): Promise<void> {

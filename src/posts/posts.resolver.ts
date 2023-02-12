@@ -1,11 +1,12 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { CurrentProfile, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Post } from './post.model';
 import { PostsService } from './posts.service';
 import { Profile as ProfileEntity } from '../profiles/profile.entity';
 import { Profile } from '../profiles/profile.model';
 import { ProfilesService } from 'src/profiles/profiles.service';
+import { CreatePostResult } from './dto/create-post-result.dto';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -27,7 +28,7 @@ export class PostsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => Post, { name: 'createPost' })
+  @Mutation(() => CreatePostResult, { name: 'createPost' })
   async createPost(
     @CurrentProfile() profile: ProfileEntity,
     @Args('text') text: string,

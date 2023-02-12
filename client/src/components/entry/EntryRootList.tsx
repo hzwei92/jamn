@@ -90,7 +90,7 @@ const EntryRootList = ({ entry, post, depth }: EntryRootListProps) => {
     dispatch(mergeEntries([entry1]));
   }, [entry.shouldFetch]);
 
-  const { setShowCreatePostModal, setCreationPostId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
+  const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
   const profile = useAppSelector(selectCurrentProfile);
 
@@ -103,7 +103,7 @@ const EntryRootList = ({ entry, post, depth }: EntryRootListProps) => {
   }
 
   const handleCreateClick = () => {
-    setCreationPostId(post.id);
+    setCreationEntryId(entry.id);
     setCreationDirection(PostDirection.LEAF);
     setShowCreatePostModal(true);
   };

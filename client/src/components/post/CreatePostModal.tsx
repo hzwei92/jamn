@@ -1,26 +1,26 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal, isPlatform } from "@ionic/react";
-import { Editor, EditorState } from "draft-js";
-import { close, closeOutline, send, sendOutline } from "ionicons/icons";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal } from "@ionic/react";
+import { EditorState } from "draft-js";
+import { closeOutline, send } from "ionicons/icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import useCreatePost from "../../hooks/post/useCreatePost";
+import { selectEntryById } from "../../redux/entrySlice";
 import { useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import EditorComponent from "../editor/Editor";
 
 const CreatePostModal = () => {
-  const createPost = useCreatePost();
-
   const { 
     showCreatePostModal,
     setShowCreatePostModal,
-    creationPostId,
-    setCreationPostId,
+    creationEntryId,
     creationDirection,
-    setCreationDirection,
     editorState,
     setEditorState,
   } = useContext(AppContext);
 
+  const creationEntry = useAppSelector(state => selectEntryById(state, creationEntryId));
+
+  const createPost = useCreatePost();
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
@@ -47,13 +47,11 @@ const CreatePostModal = () => {
 
   const handleClose = () => {
     setShowCreatePostModal(false);
-    setCreationPostId(null);
-    setCreationDirection(null);
     setEditorState(EditorState.createEmpty());
   };
 
   const handleSubmit = () => {
-    createPost(text, creationPostId, creationDirection);
+    createPost(text, creationEntry?.postId ?? null, creationDirection);
     handleClose();
   }
 

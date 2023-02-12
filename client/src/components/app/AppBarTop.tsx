@@ -59,6 +59,7 @@ const AppBarTop = () => {
         </IonButton>
       </IonButtons>
       <IonInput style={{
+        marginLeft: 5,
         marginRight: 10,
         display: 'flex',
       }}
