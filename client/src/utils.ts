@@ -33,7 +33,10 @@ export const serialize = (value: Descendant[]) => {
 
 export const deserialize = (text: string) => {
   return text.split('\n').map(line => {
-    return { text: line };
+    return {
+      type: 'paragaph',
+      children: [{ text: line }],
+    };
   });
 };
 
