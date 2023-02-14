@@ -61,6 +61,7 @@ const CreatePostModal = () => {
 
   const handleClose = () => {
     setShowCreatePostModal(false);
+    editor.selection = null;
     editor.children = [{
       type: 'paragraph',
       children: [{ text: '' }],

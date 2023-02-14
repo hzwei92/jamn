@@ -5,7 +5,7 @@
 type CreatePostResult {
   leafPin: Pin
   nextLink: Link
-  post: Post!
+  post: Post
   prevLink: Link
   rootPin: Pin
 }

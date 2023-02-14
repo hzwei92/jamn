@@ -6,7 +6,7 @@ import { Post } from "../post.model";
 
 @ObjectType()
 export class CreatePostResult {
-  @Field(() => Post)
+  @Field(() => Post, { nullable: true })
   post: Post;
 
   @Field(() => Link, { nullable: true })

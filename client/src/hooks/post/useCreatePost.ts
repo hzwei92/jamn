@@ -7,9 +7,6 @@ import { useIonToast } from "@ionic/react";
 import { mergePosts } from "../../redux/postSlice";
 import { mergeLinks } from "../../redux/linkSlice";
 import { mergePins } from "../../redux/pinSlice";
-import { Post } from "../../types/post";
-import { Link } from "../../types/link";
-import { Pin } from "../../types/pin";
 import { LINK_FIELDS } from "../../fragments/linkFragments";
 import { PIN_FIELDS } from "../../fragments/pinFragments";
 import { Entry } from "../../types/entry";
@@ -31,9 +28,15 @@ const CREATE_POST = gql`
         prevPost {
           ...FullPostFields
         }
+        nextPost {
+          ...FullPostFields
+        }
       }
       nextLink {
         ...LinkFields
+        prevPost {
+          ...FullPostFields
+        }
         nextPost {
           ...FullPostFields
         }
@@ -43,9 +46,15 @@ const CREATE_POST = gql`
         rootPost {
           ...FullPostFields
         }
+        leafPost {
+          ...FullPostFields
+        }
       }
       leafPin {
         ...PinFields
+        rootPost {
+          ...FullPostFields
+        }
         leafPost {
           ...FullPostFields
         }
@@ -85,7 +94,9 @@ const useCreatePost = () => {
 
       const { post, prevLink, nextLink, rootPin, leafPin } = data.createPost;
 
-      dispatch(mergePosts([post]));
+      if (post) {
+        dispatch(mergePosts([post]));
+      }
 
       const links = [];
       if (prevLink) {
@@ -107,10 +118,12 @@ const useCreatePost = () => {
 
       dispatch(mergePins(pins));
 
+      const newPost = post ?? prevLink?.prevPost ?? nextLink?.nextPost ?? rootPin?.rootPost ?? leafPin?.leafPost;
+
       const entry: Entry = {
         id: v4(),
-        postId: post.id,
-        profileId: post.profileId,
+        postId: newPost.id,
+        profileId: newPost.profileId,
         linkId: prevLink?.id ?? nextLink?.id ?? null,
         pinId: rootPin?.id ?? leafPin?.id ?? null,
         parentEntryId: creationEntry?.id ?? null,
@@ -124,7 +137,6 @@ const useCreatePost = () => {
 
       dispatch(mergeEntries([entry]));
 
-      console.log(creationEntry);
       if (creationEntry) {
         const creationEntry1: Entry = {
           ...creationEntry,

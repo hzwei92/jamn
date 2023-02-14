@@ -44,11 +44,6 @@ export class PostsService {
 
     await this.profilesService.incrementPostCount(profile.id);
 
-    let prevLink = null;
-    let nextLink = null;
-    let rootPin = null;
-    let leafPin = null;
-
     if (contextPostId && contextDirection) {
       const contextPost = await this.postsRepository.findOne({
         where: {
@@ -60,26 +55,25 @@ export class PostsService {
       }
 
       if (contextDirection === PostDirection.PREV) {
-        prevLink = await this.linksService.createLink(post, contextPost);
+        const prevLink = await this.linksService.createLink(post, contextPost);
+        return { prevLink };
       }
       else if (contextDirection === PostDirection.NEXT) {
-        nextLink = await this.linksService.createLink(contextPost, post);
+        const nextLink = await this.linksService.createLink(contextPost, post);
+        return { nextLink };
       }
       else if (contextDirection === PostDirection.ROOT) {
-        rootPin = await this.pinsService.createPin(post, contextPost);
+        const rootPin = await this.pinsService.createPin(post, contextPost);
+        return { rootPin };
       }
       else if (contextDirection === PostDirection.LEAF) {
-        leafPin = await this.pinsService.createPin(contextPost, post);
+        const leafPin = await this.pinsService.createPin(contextPost, post);
+        return { leafPin };
       }
     }
-
-    return {
-      post,
-      prevLink,
-      nextLink,
-      rootPin,
-      leafPin,
-    };
+    else {
+      return { post };
+    }
   }
 
   async incrementPrevCount(postId: string, amount: number): Promise<void> {

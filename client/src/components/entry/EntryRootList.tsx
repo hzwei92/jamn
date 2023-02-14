@@ -104,7 +104,7 @@ const EntryRootList = ({ entry, post, depth }: EntryRootListProps) => {
 
   const handleCreateClick = () => {
     setCreationEntryId(entry.id);
-    setCreationDirection(PostDirection.LEAF);
+    setCreationDirection(PostDirection.ROOT);
     setShowCreatePostModal(true);
   };
 
