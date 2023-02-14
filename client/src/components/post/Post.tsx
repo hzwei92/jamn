@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { selectPostById } from "../../redux/postSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
@@ -9,15 +9,13 @@ import { closeOutline, linkOutline, pushOutline, settingsOutline } from "ionicon
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
-import { getTimeString } from "../../utils";
-import DraftEditor from '@draft-js-plugins/editor';
-import { ContentState, EditorState } from "draft-js";
+import { deserialize, getTimeString } from "../../utils";
 import { selectCurrentProfile } from "../../redux/profileSlice";
 import { selectEntryById } from "../../redux/entrySlice";
 import { selectPinById } from "../../redux/pinSlice";
 import useDeletePin from "../../hooks/pin/useDeletePin";
-
-import 'draft-js/dist/Draft.css';
+import { Editable, Slate, withReact } from "slate-react";
+import { createEditor } from "slate";
 
 interface PostProps {
   entryId: string;
@@ -58,13 +56,15 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     deletePin(pin.id)
   }
 
+  const [editor] = useState(() => withReact(createEditor()));
+
+  const value = deserialize(post?.text ?? '');
+
   if (!post) return null;
 
   const time = new Date(post.createDate).getTime();
   const timeString = getTimeString(time);
 
-  const contentState = ContentState.createFromText(post.text);
-  const editorState = EditorState.createWithContent(contentState);
 
   return (
     <IonCard style={{
@@ -117,11 +117,9 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             ? 'white'
             : 'black',
         }}>
-          <DraftEditor
-            editorState={editorState}
-            onChange={() => {}}
-            readOnly={true}
-          />
+          <Slate editor={editor} value={value} >
+            <Editable readOnly={true}/>
+          </Slate>
         </div>
       </div>
       <div style={{

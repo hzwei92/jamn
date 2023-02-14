@@ -1,9 +1,7 @@
 import { IonApp } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { EditorState } from "draft-js";
-import { createContext, Dispatch, RefObject, SetStateAction, useMemo, useRef, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react";
 import { PostDirection } from "../../enums";
-import Editor from '@draft-js-plugins/editor';
 
 export type AppContextState = {
   showLoginModal: boolean;

@@ -1,13 +1,32 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonModal } from "@ionic/react";
-import { EditorState } from "draft-js";
 import { closeOutline, send } from "ionicons/icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import useCreatePost from "../../hooks/post/useCreatePost";
 import { selectEntryById } from "../../redux/entrySlice";
 import { useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
+import { createEditor, Descendant } from "slate";
+import { Slate, Editable, withReact } from "slate-react";
+import { serialize } from "../../utils";
+import { BaseEditor } from 'slate';
+import { ReactEditor } from 'slate-react';
+import { withHistory } from 'slate-history';
 
-import DraftEditor from '@draft-js-plugins/editor';
+type CustomElement = { type: string; children: CustomText[] }
+type CustomText = { text: string }
+
+declare module 'slate' {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor
+    Element: CustomElement
+    Text: CustomText
+  }
+}
+
+const initialValue = [{
+  type: 'paragraph',
+  children: [{ text: '' }],
+}];
 
 const CreatePostModal = () => {
   const { 
@@ -23,8 +42,6 @@ const CreatePostModal = () => {
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
-  const editorRef = useRef<DraftEditor>(null);
-
   useEffect(() => {
     if (showCreatePostModal) {
       modalRef.current?.present();
@@ -36,34 +53,34 @@ const CreatePostModal = () => {
 
   const [count, setCount] = useState(0);
 
-
-  const [editorState, setEditorState] = useState(() => {
-    return EditorState.createEmpty();
-  });
-
+  const [editor] = useState(() => withReact(withHistory(createEditor())));
 
   const handleOpen = () => {
-    editorRef.current?.focus();
+    ReactEditor.focus(editor);
   }
 
   const handleClose = () => {
     setShowCreatePostModal(false);
-    setEditorState(EditorState.createEmpty());
+    editor.children = [{
+      type: 'paragraph',
+      children: [{ text: '' }],
+    }];
+    editor.onChange();
     setCount(0);
   };
 
   const handleSubmit = () => {
-    const contentState = editorState.getCurrentContent();
-    const text = contentState.getPlainText('\n');
+    const text = serialize(editor.children);
     createPost(text, creationEntry?.postId ?? null, creationDirection);
     handleClose();
   }
 
-  const handleChange = (newState: EditorState) => {
-    setEditorState(newState);
-    const contentState = newState.getCurrentContent();
-    const text = contentState.getPlainText('\n');
-    setCount(text.length);
+  const handleChange = (value: Descendant[]) => {
+    const isAstChange = editor.operations.some(op => op.type !== 'set_selection');
+    if (isAstChange) {
+      const text = serialize(value);
+      setCount(text.length);
+    }
   }
 
   return (
@@ -94,12 +111,11 @@ const CreatePostModal = () => {
             borderRadius: 5,
             padding: 20,
           }}>
-            <DraftEditor
-              ref={editorRef}
-              editorState={editorState} 
-              onChange={handleChange} 
-              spellCheck={true}
-            />
+            <Slate editor={editor} value={initialValue} onChange={handleChange}>
+              <Editable
+                placeholder="What's happening?"
+              />
+            </Slate>
           </div>
           <div style={{
             margin: 15,

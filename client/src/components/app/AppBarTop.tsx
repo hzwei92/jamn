@@ -119,6 +119,7 @@ const AppBarTop = () => {
                         marginTop: 5,
                         marginLeft: 5,
                         marginBottom: 5,
+                        textDecoration: 'underline',
                       }}>
                         {profile?.name}
                       </div>

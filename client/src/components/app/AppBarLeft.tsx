@@ -31,7 +31,7 @@ const AppBarLeft = () => {
   }
 
   const handleMenuClick = (m: Mode) => () => {
-    router.push(`/${m.toLowerCase()}`);
+    
   }
 
   return (

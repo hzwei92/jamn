@@ -1,3 +1,5 @@
+import { Descendant, Node } from "slate";
+
 const second = 1000;
 const minute = 60 * second;
 const hour = 60 * minute;
@@ -23,5 +25,15 @@ export const getTimeString = (time: number) => {
               ? (dTime / minute).toFixed(0) + 'min'
               : 'LIVE!'
   );
+};
+
+export const serialize = (value: Descendant[]) => {
+  return value.map(n => Node.string(n)).join('\n');
+};
+
+export const deserialize = (text: string) => {
+  return text.split('\n').map(line => {
+    return { text: line };
+  });
 };
 
