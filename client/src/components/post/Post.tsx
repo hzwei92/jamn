@@ -5,12 +5,12 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { caretUpCircleOutline, caretUpOutline, chevronUpOutline, closeOutline, colorWandOutline, createOutline, cubeOutline, documentOutline, heartOutline, informationCircleOutline, linkOutline, prismOutline, pushOutline, repeat, repeatOutline, scanOutline, settingsOutline, shareOutline } from "ionicons/icons";
+import { closeOutline, easelOutline, informationCircleOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
 import { deserialize, getTimeString } from "../../utils";
-import { selectCurrentProfile } from "../../redux/profileSlice";
+import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { mergeEntries, selectEntryById } from "../../redux/entrySlice";
 import { selectPinById } from "../../redux/pinSlice";
 import useDeletePin from "../../hooks/pin/useDeletePin";
@@ -18,7 +18,6 @@ import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
 import { Entry } from "../../types/entry";
 import { v4 } from "uuid";
-import { OFF_WHITE, ORANGE } from "../../constants";
 import useSetCurrentProfileIndexPost from "../../hooks/profile/useSetCurrentProfileIndexPost";
 
 interface PostProps {
@@ -43,6 +42,8 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
   const pinRootPost = useAppSelector(state => selectPostById(state, pin?.rootPostId ?? null));
 
   const slice = useAppSelector(selectPortalSlice);
+
+  const postProfile = useAppSelector(state => selectProfileById(state, post?.profileId ?? null));
 
   const profile = useAppSelector(selectCurrentProfile);
 
@@ -100,7 +101,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
 
   const value = deserialize(post?.text ?? '');
 
-  if (!post) return null;
+  if (!post || !postProfile) return null;
 
   const time = new Date(post.createDate).getTime();
   const timeString = getTimeString(time);
@@ -110,7 +111,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
       margin: 15,
       marginBottom: 0,
       borderLeft: '5px solid',
-      borderColor: post.profile?.color,
+      borderColor: postProfile.color,
       maxWidth: 420,
       padding: 10,
     }}>
@@ -126,11 +127,11 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             display: 'flex',
           }}>
             <img 
-              src={`https://www.gravatar.com/avatar/${md5(post.profile.email)}?d=retro`}
+              src={`https://www.gravatar.com/avatar/${md5(postProfile.email)}?d=retro`}
               style={{
                 marginRight: 5,
                 borderRadius: 10,
-                border: `2px solid ${post.profile.color}`,
+                border: `2px solid ${postProfile.color}`,
                 width: 20,
                 height: 20,
               }}
@@ -142,7 +143,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
                 textDecoration: 'underline',
                 cursor: 'pointer',
               }}>
-                { post.profile?.name }
+                { postProfile?.name }
               </div>
               &nbsp;
               { timeString }
@@ -178,7 +179,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
               marginLeft: 5,
             }}>
-              <IonIcon icon={documentOutline} size='small'/>
+              <IonIcon icon={easelOutline} size='small'/>
             </IonButton>
             <IonButton onClick={handleDeletePinClick} style={{
                 display: !!profile && !!pin && profile.id === pinRootPost?.profileId && depth !== 0

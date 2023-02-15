@@ -2,11 +2,15 @@ import { IonButton, IonButtons, IonCard, IonIcon, IonInput, IonPopover } from "@
 import { arrowBackOutline, arrowForwardOutline, searchOutline } from "ionicons/icons";
 import md5 from "md5";
 import { useContext } from "react";
+import { v4 } from "uuid";
 import useLogout from "../../hooks/auth/useLogout";
 import { selectIsDone } from "../../redux/authSlice";
-import { back, forward, selectPortalIndex, selectPortalStack } from "../../redux/portalSlice";
+import { mergeEntries } from "../../redux/entrySlice";
+import { back, forward, pushPortalSlice, selectPortalIndex, selectPortalStack } from "../../redux/portalSlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { Entry } from "../../types/entry";
+import { PortalSlice } from "../../types/portal";
 import { AppContext } from "./AppProvider";
 
 
@@ -37,6 +41,36 @@ const AppBarTop = () => {
 
   const handleForwardClick = () => {
     dispatch(forward());
+  }
+
+  const handleProfileClick = () => {
+    if (!profile) return;
+
+    const entry1: Entry = {
+      id: v4(),
+      parentEntryId: null,
+      postId: null,
+      profileId: profile.id,
+      linkId: null,
+      pinId: null,
+      showDirection: null,
+      prevEntryIds: [],
+      nextEntryIds: [],
+      rootEntryIds: [],
+      leafEntryIds: [],
+      shouldFetch: false,
+    }
+
+    dispatch(mergeEntries([entry1]));
+
+    const slice1: PortalSlice = {
+      profileFilter: stack[index].profileFilter,
+      originalQuery: '',
+      query: '',
+      entryIds: [entry1.id],
+    };
+
+    dispatch(pushPortalSlice(slice1));
   }
 
   return (
@@ -115,11 +149,12 @@ const AppBarTop = () => {
                     <div style={{
                       padding: 10,
                     }}>
-                      <div style={{
+                      <div onClick={handleProfileClick} style={{
                         marginTop: 5,
                         marginLeft: 5,
                         marginBottom: 5,
                         textDecoration: 'underline',
+                        cursor: 'pointer',
                       }}>
                         {profile?.name}
                       </div>

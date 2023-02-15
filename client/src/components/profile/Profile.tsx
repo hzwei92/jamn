@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
-import { arrowBackCircleOutline, arrowDownCircleOutline, arrowForwardCircleOutline, arrowUpCircleOutline, chevronUpOutline, documentOutline, scanOutline, shareOutline } from "ionicons/icons";
+import { arrowBackCircleOutline, arrowDownCircleOutline, arrowForwardCircleOutline, arrowUpCircleOutline, chevronUpOutline, documentOutline, easelOutline, scanOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import md5 from "md5";
 import { ORANGE } from "../../constants";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
@@ -67,30 +67,37 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
       }}>
         { profile.name }
       </div>
-      <div>
-        <IonButtons style={{
-          display: 'flex',
-        }}>
-            <IonButton onClick={() => {}} style={{
-              display: profile.id === currentProfile?.id 
-                ? 'none' 
-                : null,
-              color: ORANGE,
-              borderRadius: 5,
-              border: `1px solid ${ORANGE}`,
-            }}>
-              FOLLOW
-            </IonButton>
-            <IonButton style={{
-              marginLeft: 5,
-            }}>
-              <IonIcon icon={shareOutline} size='small'/>
-            </IonButton>
-            <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
-              marginLeft: 5,
-            }}>
-              <IonIcon icon={documentOutline} size='small'/>
-            </IonButton>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}>
+        <IonButtons>
+          <IonButton onClick={() => {}} style={{
+            marginRight: 5,
+            display: profile.id === currentProfile?.id 
+              ? 'none' 
+              : null,
+            color: ORANGE,
+            borderRadius: 5,
+            border: `1px solid ${ORANGE}`,
+          }}>
+            FOLLOW
+          </IonButton>
+          <IonButton style={{
+            marginLeft: 5,
+          }}>
+            <IonIcon icon={shareOutline} size='small'/>
+          </IonButton>
+          <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
+            marginLeft: 5,
+          }}>
+            <IonIcon icon={easelOutline} size='small'/>
+          </IonButton>
+        </IonButtons>
+        <IonButtons>
+          <IonButton>
+            <IonIcon icon={settingsOutline} size='small'/>
+          </IonButton>
         </IonButtons>
       </div>
       <ProfileDirections entryId={entryId} profileId={profile.id} />

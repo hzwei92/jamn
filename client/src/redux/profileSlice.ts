@@ -2,6 +2,9 @@ import { createSelector, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from './store'
 import { Profile } from '../types/profile';
+import { mergePosts } from './postSlice';
+import { mergeLinks } from './linkSlice';
+import { mergePins } from './pinSlice';
 
 interface ProfileState {
   currentProfileId: string | null;
@@ -25,6 +28,36 @@ export const profileSlice = createSlice({
         state.idToProfile[profile.id] = profile;
       });
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(mergePosts, (state, action) => {
+        action.payload.forEach(post => {
+          if (post.profile) {
+            state.idToProfile[post.profile.id] = post.profile;
+          }
+        });
+      })
+      .addCase(mergeLinks, (state, action) => {
+        action.payload.forEach(link => {
+          if (link.prevPost?.profile) {
+            state.idToProfile[link.prevPost.profile.id] = link.prevPost.profile;
+          }
+          if (link.nextPost?.profile) {
+            state.idToProfile[link.nextPost.profile.id] = link.nextPost.profile;
+          }
+        });
+      })
+      .addCase(mergePins, (state, action) => {
+        action.payload.forEach(pin => {
+          if (pin.rootPost?.profile) {
+            state.idToProfile[pin.rootPost?.profile.id] = pin.rootPost.profile;
+          }
+          if (pin.leafPost?.profile) {
+            state.idToProfile[pin.leafPost?.profile.id] = pin.leafPost.profile;
+          }
+        });
+      })
   },
 })
 

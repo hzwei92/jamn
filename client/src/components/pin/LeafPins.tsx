@@ -6,7 +6,7 @@ import { PostDirection } from "../../enums";
 import useCreatePin from "../../hooks/pin/useCreatePin";
 import useGetLeafPins from "../../hooks/pin/useGetLeafPins";
 import { mergeEntries } from "../../redux/entrySlice";
-import { selectCurrentProfile } from "../../redux/profileSlice";
+import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
 import { Post } from "../../types/post";
@@ -91,6 +91,8 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
 
   const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
+  const postProfile = useAppSelector(state => selectProfileById(state, post.profileId));
+
   const profile = useAppSelector(selectCurrentProfile);
  
   const handleConnectClick = () => {
@@ -111,7 +113,7 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
     <div style={{
       marginLeft: 15,
       borderLeft: '2px solid',
-      borderColor: post.profile.color,
+      borderColor: postProfile?.color,
       display: 'flex',
       flexDirection: 'column',
     }}>

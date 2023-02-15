@@ -6,7 +6,7 @@ import { PostDirection } from "../../enums";
 import useCreateLink from "../../hooks/link/useCreateLink";
 import useGetPrevLinks from "../../hooks/link/useGetPrevLinks";
 import { mergeEntries } from "../../redux/entrySlice";
-import { selectCurrentProfile } from "../../redux/profileSlice";
+import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
 import { Post } from "../../types/post";
@@ -92,6 +92,8 @@ const PrevLinks = ({ entry, post, depth }: PrevLinksProps) => {
 
   const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
+  const postProfile = useAppSelector(state => selectProfileById(state, post.profileId));
+
   const profile = useAppSelector(selectCurrentProfile);
 
   const handleConnectClick = () => {
@@ -111,7 +113,7 @@ const PrevLinks = ({ entry, post, depth }: PrevLinksProps) => {
     <div style={{
       marginLeft: 15,
       borderLeft: '2px solid',
-      borderColor: post.profile.color,
+      borderColor: postProfile?.color,
       display: 'flex',
       flexDirection: 'column',
     }}>

@@ -33,6 +33,7 @@ const PostConnect = ({ postId }: PostConnectProps) => {
         : 'none',
     }}>
       <IonButton onClick={handleClick} style={{
+        marginRight: 5,
         borderRadius: 5,
         backgroundColor: isConnecting
           ? isDarkMode

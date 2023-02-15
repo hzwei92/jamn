@@ -7,7 +7,7 @@ import useCreatePin from "../../hooks/pin/useCreatePin";
 import useGetRootPins from "../../hooks/pin/useGetRootPins";
 import { mergeEntries } from "../../redux/entrySlice";
 import { selectPostById } from "../../redux/postSlice";
-import { selectCurrentProfile } from "../../redux/profileSlice";
+import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
 import { Post } from "../../types/post";
@@ -92,6 +92,8 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
 
   const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
+  const postProfile = useAppSelector(state => selectProfileById(state, post.profileId));
+
   const profile = useAppSelector(selectCurrentProfile);
 
   const connectionPost = useAppSelector(state => selectPostById(state, connectionPostIds[0] ?? null));
@@ -112,7 +114,7 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
     <div style={{
       marginLeft: 15,
       borderLeft: '2px solid',
-      borderColor: post.profile.color,
+      borderColor: postProfile?.color,
       display: 'flex',
       flexDirection: 'column',
     }}>

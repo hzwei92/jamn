@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCard, IonIcon, isPlatform, useIonRouter } from "@ionic/react"
-import { apertureOutline, moonOutline, peopleOutline, personCircleOutline, sunnyOutline } from "ionicons/icons";
+import { apertureOutline, mapOutline, moonOutline, notificationsOutline, peopleOutline, personCircleOutline, sunnyOutline } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { selectCurrentProfile } from "../../redux/profileSlice";
 import { useAppSelector } from "../../redux/store";
@@ -88,7 +88,7 @@ const AppBarLeft = () => {
               : null,
           }}
         >
-          <IonIcon icon={personCircleOutline} />
+          <IonIcon icon={mapOutline} />
         </IonButton>
         <IonButton
           onMouseEnter={handleMenuMouseEnter(Mode.CONTACTS)}
@@ -102,7 +102,7 @@ const AppBarLeft = () => {
               : null,
           }}
         >
-          <IonIcon icon={peopleOutline} />
+          <IonIcon icon={notificationsOutline} />
         </IonButton>
       </IonButtons>
       <IonButtons style={{
