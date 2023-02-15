@@ -21,11 +21,17 @@ export class GqlInterceptor implements NestInterceptor {
     const accessToken = req.headers.accesstoken;
 
     if (accessToken) {
-      const tokenPayload = this.jwtService.verify(accessToken, {
-        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-      });
-
-      req.headers.profileId = tokenPayload.profileId;
+      try {
+        const tokenPayload = this.jwtService.verify(accessToken, {
+          secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+        });
+  
+        req.headers.profileId = tokenPayload.profileId;
+      } catch (err) {
+        if (err.name !== 'TokenExpiredError') {
+          throw err;
+        }
+      }
     }
 
     return next.handle();

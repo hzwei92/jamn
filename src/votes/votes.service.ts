@@ -15,14 +15,12 @@ export class VotesService {
   ) {}
 
   async getVoteByProfileIdAndPostId(profileId: string, postId: string) {
-    console.log('getVoteByProfileIdAndPostId', profileId, postId)
     const vote = await this.voteRepository.findOne({
       where: { 
         profileId, 
         postId,
       },
     });
-    console.log(vote);
 
     return vote;
   }
