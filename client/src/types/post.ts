@@ -1,4 +1,5 @@
 import { Profile } from "./profile";
+import { Vote } from "./vote";
 
 export type Post = {
   id: string;
@@ -14,4 +15,5 @@ export type Post = {
   createDate: string;
   updateDate: string;
   deleteDate: string | null;
+  currentProfileVote: Vote | null;
 };

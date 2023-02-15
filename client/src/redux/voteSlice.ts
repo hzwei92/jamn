@@ -50,11 +50,11 @@ export const postSlice = createSlice({
 
 export const { mergePosts } = postSlice.actions
 
-export const selectIdToPost = (state: RootState) => state.post.idToPost
+export const selectIdToPost = (state: RootState) => state.post.idToPost;
 
 export const selectPostById = createSelector([
   selectIdToPost,
   (_: RootState, id: string | null) => id,
 ], (idToPost, id) => id ? idToPost[id] : null);
 
-export default postSlice.reducer
+export default postSlice.reducer;

@@ -151,7 +151,7 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
           marginLeft: 10,
           color: 'grey',
         }}>
-          (leaf posts)
+          (sub posts)
         </div>
       </div>
       {

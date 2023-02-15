@@ -43,7 +43,9 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
       margin: 15,
       marginBottom: 0,
       borderTop: '7px solid',
-      borderLeft: '2px solid',
+      borderLeft: !!entry?.showDirection
+        ? `2px solid ${profile.color}`
+        : 'none',
       borderColor: profile.color,
       maxWidth: 420,
       padding: 10,

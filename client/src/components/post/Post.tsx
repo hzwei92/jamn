@@ -1,11 +1,11 @@
-import { IonButton, IonButtons, IonCard, IonIcon, IonPopover } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonIcon, IonPopover, isPlatform } from "@ionic/react";
 import { useContext, useState } from "react";
 import { selectPostById } from "../../redux/postSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { closeOutline, easelOutline, informationCircleOutline, settingsOutline, shareOutline } from "ionicons/icons";
+import { caretDownOutline, caretUpOutline, chevronDownOutline, chevronUpOutline, closeOutline, easelOutline, informationCircleOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
@@ -19,6 +19,7 @@ import { createEditor } from "slate";
 import { Entry } from "../../types/entry";
 import { v4 } from "uuid";
 import useSetCurrentProfileIndexPost from "../../hooks/profile/useSetCurrentProfileIndexPost";
+import useVote from "../../hooks/vote/useVote";
 
 interface PostProps {
   entryId: string;
@@ -30,6 +31,8 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
   const dispatch = useAppDispatch();
 
   const setCurrentProfileIndexPost = useSetCurrentProfileIndexPost();
+
+  const vote = useVote();
   
   const deletePin = useDeletePin();
 
@@ -97,6 +100,28 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     setCurrentProfileIndexPost(post.id);
   }
 
+  const handleUpvoteClick = () => {
+    if (!post || !profile) return;
+    
+    if (post.currentProfileVote?.value === 1) {
+      vote(post.id, 0);
+    }
+    else {
+      vote(post.id, 1);
+    }
+  }
+
+  const handleDownvoteClick = () => {
+    if (!post || !profile) return;
+    
+    if (post.currentProfileVote?.value === -1) {
+      vote(post.id, 0);
+    }
+    else {
+      vote(post.id, -1);
+    }
+  }
+
   const [editor] = useState(() => withReact(createEditor()));
 
   const value = deserialize(post?.text ?? '');
@@ -118,6 +143,44 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
         ? 0
         : null,
     }}>
+      <div style={{
+        position: 'relative',
+        marginLeft: 24,
+      }}>
+      <div style={{
+        position: 'absolute',
+        left: isPlatform('ios')
+          ? -31
+          : -33,
+        top: -10,
+      }}>
+        <IonButtons style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <IonButton disabled={!profile} onClick={handleUpvoteClick} style={{
+            color: post.currentProfileVote?.value === 1
+              ? isDarkMode
+                ? 'white'
+                : 'black'
+              : null,
+          }}>
+            <IonIcon icon={post.currentProfileVote?.value === 1 ? caretUpOutline : chevronUpOutline} size='small'/>
+          </IonButton>
+          <IonButton>
+            { post.upvotes }
+          </IonButton>
+          <IonButton disabled={!profile} onClick={handleDownvoteClick} style={{
+            color: post.currentProfileVote?.value === -1
+              ? isDarkMode
+                ? 'white'
+                : 'black'
+              : null,
+          }}>
+            <IonIcon icon={post.currentProfileVote?.value === -1 ? caretDownOutline : chevronDownOutline} size='small'/>
+          </IonButton>
+        </IonButtons>
+      </div>
       <div>
         <div style={{
           marginTop: 5,
@@ -166,6 +229,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
         </div>
       </div>
       <div style={{
+        marginLeft: 4,
         display: 'flex',
         justifyContent: 'space-between',
       }}>
@@ -173,7 +237,11 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
           display: 'flex',
         }}>
           <PostConnect postId={postId} />
-          <IonButtons>
+          <IonButtons style={{
+            marginLeft: !!profile
+              ? 0
+              : -5,
+          }}>
             <IonButton style={{
               marginLeft: 5,
             }}>
@@ -213,6 +281,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             </div>
           </IonPopover>
         </IonButtons>
+      </div>
       </div>
       <PostDirections entryId={entryId} postId={postId} />
     </IonCard>

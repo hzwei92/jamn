@@ -152,7 +152,7 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
           justifyContent: 'center',
           color: 'grey',
         }}>
-          (root posts)
+          (super posts)
         </div>
       </div>
       {

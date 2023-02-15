@@ -33,6 +33,7 @@ const authLink = setContext(async (_, { headers }) => {
   const accessToken = await Preferences.get({
     key: ACCESS_TOKEN_KEY,
   })
+  console.log('accessToken', accessToken)
   // return the headers to the context so httpLink can read them
   return {
     headers: {

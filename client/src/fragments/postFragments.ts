@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { PROFILE_FIELDS } from "./profileFragments";
-
+import { VOTE_FIELDS } from "./voteFragments";
 
 export const POST_FIELDS = gql`
   fragment PostFields on Post {
@@ -25,7 +25,11 @@ export const FULL_POST_FIELDS = gql`
     profile {
       ...ProfileFields
     }
+    currentProfileVote {
+      ...VoteFields
+    }
   }
   ${POST_FIELDS}
   ${PROFILE_FIELDS}
+  ${VOTE_FIELDS}
 `

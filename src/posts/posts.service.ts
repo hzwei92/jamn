@@ -91,4 +91,8 @@ export class PostsService {
   async incrementLeafCount(postId: string, amount: number): Promise<void> {
     await this.postsRepository.increment({ id: postId }, 'leafCount', amount);
   }
+
+  async incrementUpvotes(postId: string, amount: number): Promise<void> {
+    await this.postsRepository.increment({ id: postId }, 'upvotes', amount);
+  }
 }

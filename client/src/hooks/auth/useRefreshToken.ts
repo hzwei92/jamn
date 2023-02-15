@@ -23,7 +23,7 @@ const useRefreshAccessToken = () => {
     onError: (err) => {
       console.error(err);
     },
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       console.log(data);
       const { profile, accessToken } = data.refreshAccessToken;
 
@@ -33,7 +33,7 @@ const useRefreshAccessToken = () => {
           accessToken,
         }));
 
-        Preferences.set({
+        await Preferences.set({
           key: ACCESS_TOKEN_KEY,
           value: accessToken,
         });

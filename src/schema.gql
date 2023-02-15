@@ -42,6 +42,7 @@ type Mutation {
   login(credential: String!): ProfileWithTokens!
   refreshAccessToken(refreshToken: String!): ProfileWithTokens!
   setCurrentProfileIndexPost(postId: String!): Profile!
+  vote(postId: String!, value: Int!): Vote!
 }
 
 type Pin {
@@ -58,6 +59,7 @@ type Pin {
 
 type Post {
   createDate: DateTime!
+  currentProfileVote: Vote
   deleteDate: DateTime
   id: String!
   leafCount: Int!
@@ -90,11 +92,23 @@ type Profile {
 }
 
 type ProfileWithTokens {
-  accessToken: String!
-  profile: Profile!
-  refreshToken: String!
+  accessToken: String
+  profile: Profile
+  refreshToken: String
 }
 
 type Query {
   getProfile(id: String!): Profile!
+}
+
+type Vote {
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  post: Post!
+  postId: String!
+  profile: Profile!
+  profileId: String!
+  updateDate: DateTime!
+  value: Int!
 }

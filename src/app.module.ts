@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { LinksModule } from './links/links.module';
 import { PinsModule } from './pins/pins.module';
+import { VotesModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -57,13 +58,15 @@ import { PinsModule } from './pins/pins.module';
           'http://localhost:3000',
         ],
         credentials: true,
-      }
+      },
+      context: ({req, res, connection, extra}) => ({req, res, connection, extra}),
     }),
     ProfilesModule,
     AuthModule,
     PostsModule,
     LinksModule,
     PinsModule,
+    VotesModule,
   ],
 })
 export class AppModule {}

@@ -11,6 +11,7 @@ import { PortalSlice } from "../../types/portal";
 import { ProfileFilter } from "../../enums";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import EntryComponent from "../entry/Entry";
+import { selectIsDone, selectIsValid } from "../../redux/authSlice";
 
 const Portal = () => {
   const dispatch = useAppDispatch();
@@ -46,10 +47,14 @@ const Portal = () => {
       dispatch(pushPortalSlice(slice));
     }
   });
+
+  const isValid = useAppSelector(selectIsValid);
+  const isDone = useAppSelector(selectIsDone);
   
   useEffect(() => {
+    if (!isDone) return;
     getPosts();
-  }, []);
+  }, [isDone]);
 
 
   const slice = useAppSelector(selectPortalSlice);

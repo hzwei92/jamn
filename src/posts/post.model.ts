@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Profile } from "src/profiles/profile.model";
+import { Vote } from "src/votes/vote.model";
 
 @ObjectType()
 export class Post {
@@ -44,4 +45,7 @@ export class Post {
 
   @Field({ nullable: true })
   deleteDate: Date;
+
+  @Field(() => Vote, { nullable: true })
+  currentProfileVote: Vote;
 }

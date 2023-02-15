@@ -4,12 +4,12 @@ import { Profile } from "src/profiles/profile.model";
 
 @ObjectType()
 export class ProfileWithTokens {
-  @Field(() => Profile)
+  @Field(() => Profile, { nullable: true})
   profile: Profile;
 
-  @Field()
+  @Field({ nullable: true })
   accessToken: string;
 
-  @Field()
+  @Field({ nullable: true })
   refreshToken: string;
 }

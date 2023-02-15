@@ -68,7 +68,7 @@ const Entry = ({ entryId, depth }: EntryProps) => {
   }
 
   return (
-    <div>
+    <div>    
       <Post entryId={entryId} postId={post.id} depth={depth} />
       <div style={{
         height: entry.showDirection

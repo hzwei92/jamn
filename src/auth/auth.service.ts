@@ -26,7 +26,11 @@ export class AuthService {
       const profile = await this.profilesService.getProfileIfRefreshTokenMatches(payload.profileId, refreshToken);
 
       if (!profile) {
-        throw new BadRequestException('Invalid refresh token');
+        return {
+          profile: null,
+          accessToken: null,
+          refreshToken: null,
+        }
       }
 
       return {

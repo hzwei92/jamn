@@ -91,19 +91,20 @@ const CreatePostModal = () => {
         height: '100%',
       }}>
         <IonCardHeader  style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}>
-          <IonButtons>
-            <IonButton onClick={handleClose}>
-              <IonIcon icon={closeOutline} />
-            </IonButton>
-          </IonButtons>
+          display: 'flex',
+          flexDirection: 'row-reverse',
+          justifyContent: 'space-between',
+        }}>
           <IonButton color='warning' disabled={count > 420} onClick={handleSubmit}>
             <IonIcon icon={send} style={{
               color: 'white'
             }}/>
           </IonButton>
+          <IonButtons>
+            <IonButton onClick={handleClose}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </IonButtons>
         </IonCardHeader>
         <IonCardContent>
           <div style={{
