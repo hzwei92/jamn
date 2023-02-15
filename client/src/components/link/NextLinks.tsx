@@ -1,38 +1,38 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { add, addOutline, arrowBackOutline } from "ionicons/icons";
+import { add, addOutline, arrowForwardOutline } from "ionicons/icons";
 import { useContext, useEffect } from "react";
 import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
 import useCreateLink from "../../hooks/link/useCreateLink";
-import useGetPrevLinks from "../../hooks/link/useGetPrevLinks";
+import useGetNextLinks from "../../hooks/link/useGetNextLinks";
 import { mergeEntries } from "../../redux/entrySlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
 import { Post } from "../../types/post";
 import { AppContext } from "../app/AppProvider";
-import EntryComponent from "./Entry";
+import EntryComponent from "../entry/Entry";
 
-interface EntryPrevListProps {
+interface NextLinksProps {
   entry: Entry;
   post: Post;
   depth: number;
 }
 
-const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
+const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
   const dispatch = useAppDispatch();
 
   const createLink = useCreateLink({
     onCompleted: (link) => {
       const entry1: Entry = {
         id: v4(),
-        postId: link.prevPostId,
-        profileId: link.prevPost.profileId,
+        postId: link.nextPostId,
+        profileId: link.nextPost.profileId,
         parentEntryId: entry.id,
         linkId: link.id,
         pinId: null,
         showDirection: null,
-        prevEntryIds: [],
+        prevEntryIds: [], 
         nextEntryIds: [],
         rootEntryIds: [],
         leafEntryIds: [],
@@ -41,20 +41,20 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
 
       const entry2: Entry = {
         ...entry,
-        prevEntryIds: [entry1.id, ...entry.prevEntryIds],
+        nextEntryIds: [entry1.id, ...entry.nextEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
     },
   });
 
-  const getPrevLinks = useGetPrevLinks({
+  const getNextLinks = useGetNextLinks({
     onCompleted: (links) => {
       const entries: Entry[] = links.map((link) => {
         return {
           id: v4(),
-          postId: link.prevPostId,
-          profileId: link.prevPost.profileId,
+          postId: link.nextPostId,
+          profileId: link.nextPost.profileId,
           parentEntryId: entry.id,
           linkId: link.id,
           pinId: null,
@@ -67,21 +67,21 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
         };
       });
 
-      dispatch(mergeEntries(entries));
-
       const entry1: Entry = {
         ...entry,
-        prevEntryIds: entries.map((entry) => entry.id),
+        nextEntryIds: entries.map((entry) => entry.id),
       };
 
-      dispatch(mergeEntries([entry1]));
+      entries.push(entry1);
+      
+      dispatch(mergeEntries(entries));
     },
   });
 
   useEffect(() => {
     if (!entry.shouldFetch) return;
 
-    getPrevLinks(entry.postId);
+    getNextLinks(entry.postId);
 
     const entry1: Entry = {
       ...entry,
@@ -90,20 +90,21 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
     dispatch(mergeEntries([entry1]));
   }, [entry.shouldFetch]);
 
+
   const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
   const profile = useAppSelector(selectCurrentProfile);
 
   const handleConnectClick = () => {
-    if (!!profile && connectionPostIds.length  === 1) {
-      createLink(connectionPostIds[0], post.id);
+    if (!!profile && connectionPostIds.length === 1) {
+      createLink(post.id, connectionPostIds[0]);
       setConnectionPostIds([]);
     }
   }
 
   const handleCreateClick = () => {
     setCreationEntryId(entry.id);
-    setCreationDirection(PostDirection.PREV);
+    setCreationDirection(PostDirection.NEXT);
     setShowCreatePostModal(true);
   };
 
@@ -115,9 +116,12 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
       display: 'flex',
       flexDirection: 'column',
     }}>
-      <IonButtons style={{
+      <div style={{
         marginLeft: 15,
         marginTop: 15,
+        display: 'flex',
+      }}>
+      <IonButtons style={{
       }}>
         <IonButton onClick={handleCreateClick} style={{
           display: connectionPostIds.length > 0 ? 'none' : null,
@@ -133,13 +137,23 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
           backgroundColor: '#f4900c',
           color: 'white',
         }}>
-          <IonIcon icon={arrowBackOutline} style={{
+          <IonIcon icon={arrowForwardOutline} style={{
             transform: 'scale(.8)',
           }}/>
         </IonButton>
       </IonButtons>
+      <div style={{
+        marginLeft: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'grey',
+      }}>
+        (next posts)
+      </div>
+      </div>
       {
-        entry.prevEntryIds.map((entryId) => {
+        entry.nextEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )
@@ -149,4 +163,4 @@ const EntryPrevList = ({ entry, post, depth }: EntryPrevListProps) => {
   );
 }
 
-export default EntryPrevList;
+export default NextLinks;

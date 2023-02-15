@@ -38,7 +38,9 @@ const useGetLeafPins = ({ onCompleted }: UseGetLeafPinsProps) => {
     },
   });
 
-  const getLeafPins = (postId: string) => {
+  const getLeafPins = (postId: string | null) => {
+    if (!postId) return;
+    
     get({
       variables: {
         postId,

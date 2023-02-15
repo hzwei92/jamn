@@ -38,7 +38,9 @@ const useGetPrevLinks = ({ onCompleted }: GetPrevLinksProps) => {
     },
   });
 
-  const getPrevLinks = (postId: string) => {
+  const getPrevLinks = (postId: string | null) => {
+    if (!postId) return;
+    
     get({
       variables: {
         postId,

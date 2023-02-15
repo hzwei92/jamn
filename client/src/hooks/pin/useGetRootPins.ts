@@ -38,7 +38,9 @@ const useGetRootPins = ({ onCompleted }: UseGetRootPinsProps) => {
     },
   });
 
-  const getRootPins = (postId: string) => {
+  const getRootPins = (postId: string | null) => {
+    if (!postId) return;
+    
     get({
       variables: {
         postId,

@@ -35,11 +35,13 @@ type Mutation {
   getCurrentProfile: Profile!
   getLeafPins(postId: String!): [Pin!]!
   getNextLinks(postId: String!): [Link!]!
+  getPost(postId: String!): Post!
   getPosts: [Post!]!
   getPrevLinks(postId: String!): [Link!]!
   getRootPins(postId: String!): [Pin!]!
   login(credential: String!): ProfileWithTokens!
   refreshAccessToken(refreshToken: String!): ProfileWithTokens!
+  setCurrentProfileIndexPost(postId: String!): Profile!
 }
 
 type Pin {
@@ -78,6 +80,8 @@ type Profile {
   deleteDate: DateTime
   email: String!
   id: String!
+  indexPost: Post
+  indexPostId: String
   name: String!
   palette: String!
   postCount: Int!

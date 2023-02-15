@@ -2,9 +2,9 @@ import { PostDirection } from "../enums";
 
 export type Entry = {
   id: string;
-  postId: string;
-  profileId: string;
   parentEntryId: string | null;
+  postId: string | null;
+  profileId: string;
   linkId: string | null;
   pinId: string | null;
   showDirection: PostDirection | null;

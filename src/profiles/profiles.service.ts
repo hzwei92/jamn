@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Profile } from './profile.entity';
 import * as bcrypt from 'bcrypt';
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
+import { Post } from 'src/posts/post.entity';
 
 @Injectable()
 export class ProfilesService {
@@ -51,6 +52,12 @@ export class ProfilesService {
     }) + '-' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
 
     profile.color = '#' + Math.floor(Math.random() * (16 ** 6)).toString(16).padStart(6, '0');
+
+    return this.profilesRepository.save(profile);
+  }
+
+  async setIndexPost(profile: Profile, post: Post) {
+    profile.indexPostId = post.id;
 
     return this.profilesRepository.save(profile);
   }

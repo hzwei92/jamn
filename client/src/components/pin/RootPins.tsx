@@ -1,33 +1,34 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { add, addOutline, arrowDownCircleOutline, arrowDownOutline } from "ionicons/icons";
+import { addOutline, arrowUpOutline } from "ionicons/icons";
 import { useContext, useEffect } from "react";
 import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
 import useCreatePin from "../../hooks/pin/useCreatePin";
-import useGetLeafPins from "../../hooks/pin/useGetLeafPins";
+import useGetRootPins from "../../hooks/pin/useGetRootPins";
 import { mergeEntries } from "../../redux/entrySlice";
+import { selectPostById } from "../../redux/postSlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
 import { Post } from "../../types/post";
 import { AppContext } from "../app/AppProvider";
-import EntryComponent from "./Entry";
+import EntryComponent from "../entry/Entry";
 
-interface EntryLeafListProps {
+interface RootPinsProps {
   entry: Entry;
   post: Post;
   depth: number;
 }
 
-const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
+const RootPins = ({ entry, post, depth }: RootPinsProps) => {
   const dispatch = useAppDispatch();
 
   const createPin = useCreatePin({
     onCompleted: (pin) => {
       const entry1: Entry = {
         id: v4(),
-        postId: pin.leafPostId,
-        profileId: pin.leafPost.profileId,
+        postId: pin.rootPostId,
+        profileId: pin.rootPost.profileId,
         parentEntryId: entry.id,
         linkId: null,
         pinId: pin.id,
@@ -40,20 +41,20 @@ const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
       }
       const entry2: Entry = {
         ...entry,
-        leafEntryIds: [entry1.id, ...entry.leafEntryIds],
+        rootEntryIds: [entry1.id, ...entry.rootEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
     },
   });
 
-  const getLeafPins = useGetLeafPins({
+  const getRootPins = useGetRootPins({
     onCompleted: (pins) => {
       const entries: Entry[] = pins.map((pin) => {
         return {
           id: v4(),
-          postId: pin.leafPostId,
-          profileId: pin.leafPost.profileId,
+          postId: pin.rootPostId,
+          profileId: pin.rootPost.profileId,
           parentEntryId: entry.id,
           linkId: null,
           pinId: pin.id,
@@ -66,21 +67,21 @@ const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
         };
       });
 
-      dispatch(mergeEntries(entries));
-
       const entry1: Entry = {
         ...entry,
-        leafEntryIds: entries.map((entry) => entry.id),
+        rootEntryIds: entries.map((entry) => entry.id),
       };
 
-      dispatch(mergeEntries([entry1]));
+      entries.push(entry1);
+
+      dispatch(mergeEntries(entries));
     },
   });
 
   useEffect(() => {
     if (!entry.shouldFetch) return;
 
-    getLeafPins(entry.postId);
+    getRootPins(entry.postId);
 
     const entry1: Entry = {
       ...entry,
@@ -92,20 +93,20 @@ const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
   const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
   
   const profile = useAppSelector(selectCurrentProfile);
- 
+
+  const connectionPost = useAppSelector(state => selectPostById(state, connectionPostIds[0] ?? null));
+
   const handleConnectClick = () => {
-    if (!!profile && post.profileId === profile.id && connectionPostIds.length === 1) {
-      createPin(post.id, connectionPostIds[0]);
-      setConnectionPostIds([]);
-    }
+    if (!profile || !connectionPost || connectionPost.profileId !== profile?.id) return;
+    createPin(connectionPost.id, post.id);
+    setConnectionPostIds([]);
   }
-   
+
   const handleCreateClick = () => {
-    setCreationEntryId(post.id);
-    setCreationDirection(PostDirection.LEAF);
+    setCreationEntryId(entry.id);
+    setCreationDirection(PostDirection.ROOT);
     setShowCreatePostModal(true);
   };
-
 
   return (
     <div style={{
@@ -115,31 +116,44 @@ const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
       display: 'flex',
       flexDirection: 'column',
     }}>
-      <IonButtons style={{
+      <div style={{
         marginLeft: 15,
         marginTop: 15,
+        display: 'flex',
       }}>
-        <IonButton disabled={!profile || post.profileId !== profile.id} onClick={handleCreateClick} style={{
-          display: connectionPostIds.length === 1 ? 'none' : null,
-          borderRadius: 5,
-          backgroundColor: '#f4900c',
-          color: 'white',
+        <IonButtons style={{
         }}>
-          <IonIcon icon={addOutline} />
-        </IonButton>
-        <IonButton disabled={!profile || post.profileId !== profile.id} onClick={handleConnectClick} style={{
-          display: connectionPostIds.length === 1 ? null : 'none',
-          borderRadius: 5,
-          backgroundColor: '#f4900c',
-          color: 'white',
+          <IonButton onClick={handleCreateClick} style={{
+            display: connectionPostIds.length === 1 ? 'none' : null,
+            borderRadius: 5,
+            backgroundColor: '#f4900c',
+            color: 'white',
+          }}>
+            <IonIcon icon={addOutline} />
+          </IonButton>
+          <IonButton onClick={handleConnectClick} disabled={!profile || connectionPost?.profileId !== profile.id} style={{
+            display: connectionPostIds.length === 1 ? null : 'none',
+            borderRadius: 5,
+            backgroundColor: '#f4900c',
+            color: 'white',
+          }}>
+            <IonIcon icon={arrowUpOutline} style={{
+              transform: 'scale(.8)',
+            }}/>
+          </IonButton>
+        </IonButtons>
+        <div style={{
+          marginLeft: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          color: 'grey',
         }}>
-          <IonIcon icon={arrowDownOutline} style={{
-            transform: 'scale(.8)',
-          }}/>
-        </IonButton>
-      </IonButtons>
+          (root posts)
+        </div>
+      </div>
       {
-        entry.leafEntryIds.map((entryId) => {
+        entry.rootEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )
@@ -149,4 +163,4 @@ const EntryLeafList = ({ entry, post, depth }: EntryLeafListProps) => {
   );
 }
 
-export default EntryLeafList;
+export default RootPins;

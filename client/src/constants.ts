@@ -38,3 +38,5 @@ export const ALGOLIA_API_KEY = '5bf84f04ac56a06944dceb0d48b18af1';
 export const ALGOLIA_INDEX = process.env.NODE_ENV === 'development'
   ? 'dev_jamn'
   : 'prod_jamn';
+
+export const ORANGE = '#f4900c';

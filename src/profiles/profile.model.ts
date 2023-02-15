@@ -1,9 +1,16 @@
 import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
+import { Post } from "src/posts/post.model";
 
 @ObjectType()
 export class Profile {
   @Field()
   id: string;
+
+  @Field({ nullable: true })
+  indexPostId: string;
+
+  @Field(() => Post, { nullable: true })
+  indexPost: Post;
 
   @Field()
   name: string;

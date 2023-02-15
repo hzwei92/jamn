@@ -1,21 +1,25 @@
-import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonIcon, IonPopover } from "@ionic/react";
 import { useContext, useState } from "react";
 import { selectPostById } from "../../redux/postSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { closeOutline, linkOutline, pushOutline, settingsOutline } from "ionicons/icons";
+import { caretUpCircleOutline, caretUpOutline, chevronUpOutline, closeOutline, colorWandOutline, createOutline, cubeOutline, documentOutline, heartOutline, informationCircleOutline, linkOutline, prismOutline, pushOutline, repeat, repeatOutline, scanOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
 import { deserialize, getTimeString } from "../../utils";
 import { selectCurrentProfile } from "../../redux/profileSlice";
-import { selectEntryById } from "../../redux/entrySlice";
+import { mergeEntries, selectEntryById } from "../../redux/entrySlice";
 import { selectPinById } from "../../redux/pinSlice";
 import useDeletePin from "../../hooks/pin/useDeletePin";
 import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
+import { Entry } from "../../types/entry";
+import { v4 } from "uuid";
+import { OFF_WHITE, ORANGE } from "../../constants";
+import useSetCurrentProfileIndexPost from "../../hooks/profile/useSetCurrentProfileIndexPost";
 
 interface PostProps {
   entryId: string;
@@ -25,6 +29,8 @@ interface PostProps {
 
 const Post = ({ entryId, postId, depth }: PostProps) => {
   const dispatch = useAppDispatch();
+
+  const setCurrentProfileIndexPost = useSetCurrentProfileIndexPost();
   
   const deletePin = useDeletePin();
 
@@ -40,7 +46,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
 
   const profile = useAppSelector(selectCurrentProfile);
 
-  const handleFrameClick = () => {
+  const handlePushClick = () => {
     const slice1: PortalSlice = { 
       profileFilter: slice.profileFilter,
       originalQuery: '',
@@ -51,9 +57,43 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     dispatch(pushPortalSlice(slice1));
   }
 
+  const handleProfileClick = () => {
+    if (!post) return;
+    const entry1: Entry = {
+      id: v4(),
+      parentEntryId: null,
+      postId: null,
+      profileId: post?.profileId,
+      linkId: null,
+      pinId: null,
+      showDirection: null,
+      prevEntryIds: [],
+      nextEntryIds: [],
+      rootEntryIds: [],
+      leafEntryIds: [],
+      shouldFetch: false,
+    }
+
+    dispatch(mergeEntries([entry1]));
+
+    const slice1: PortalSlice = {
+      profileFilter: slice.profileFilter,
+      originalQuery: '',
+      query: '',
+      entryIds: [entry1.id],
+    };
+
+    dispatch(pushPortalSlice(slice1));
+  }
+
   const handleDeletePinClick = () => {
     if (!pin) return;
     deletePin(pin.id)
+  }
+
+  const handleIndexClick = () => {
+    if (!post) return;
+    setCurrentProfileIndexPost(post.id);
   }
 
   const [editor] = useState(() => withReact(createEditor()));
@@ -64,7 +104,6 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
 
   const time = new Date(post.createDate).getTime();
   const timeString = getTimeString(time);
-
 
   return (
     <IonCard style={{
@@ -98,10 +137,10 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             />
             <div style={{
               display: 'inline-flex',
-              justifyContent: 'center',
             }}>
-              <div style={{
+              <div onClick={handleProfileClick} style={{
                 textDecoration: 'underline',
+                cursor: 'pointer',
               }}>
                 { post.profile?.name }
               </div>
@@ -132,30 +171,43 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
           <PostConnect postId={postId} />
           <IonButtons>
             <IonButton style={{
-              marginLeft: 8,
-            }}>
-              <IonIcon icon={linkOutline} size='small'/>
-            </IonButton>
-            <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handleFrameClick} style={{
               marginLeft: 5,
             }}>
-              <IonIcon icon={pushOutline} size='small'/>
+              <IonIcon icon={shareOutline} size='small'/>
+            </IonButton>
+            <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
+              marginLeft: 5,
+            }}>
+              <IonIcon icon={documentOutline} size='small'/>
             </IonButton>
             <IonButton onClick={handleDeletePinClick} style={{
-              display: !!profile && !!pin && profile.id === pinRootPost?.profileId && depth !== 0
-                ? null
-                : 'none',
-              marginLeft: 5,
-            }}>
-              <IonIcon icon={closeOutline} size='small'/>
-            </IonButton>
+                display: !!profile && !!pin && profile.id === pinRootPost?.profileId && depth !== 0
+                  ? null
+                  : 'none',
+                marginLeft: 5,
+              }}>
+                <IonIcon icon={closeOutline} size='small'/>
+              </IonButton>
           </IonButtons>
         </div>
 
         <IonButtons>
-          <IonButton>
+          <IonButton id={'settingsButton-' + entryId}>
             <IonIcon icon={settingsOutline} size='small'/>
           </IonButton>
+          <IonPopover trigger={'settingsButton-' + entryId} triggerAction='click'>
+            <div style={{
+              padding: 10,
+            }}>
+              <IonButtons>
+                <IonButton onClick={handleIndexClick}>
+                  <IonIcon icon={informationCircleOutline} size='small'/>
+                 &nbsp;USE AS INDEX
+                </IonButton>
+
+              </IonButtons>
+            </div>
+          </IonPopover>
         </IonButtons>
       </div>
       <PostDirections entryId={entryId} postId={postId} />

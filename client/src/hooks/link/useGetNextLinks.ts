@@ -39,7 +39,9 @@ const useGetNextLinks = ({ onCompleted }: GetNextLinksProps) => {
     },
   });
 
-  const getNextLinks = (postId: string) => {
+  const getNextLinks = (postId: string | null) => {
+    if (!postId) return;
+    
     get({
       variables: {
         postId,

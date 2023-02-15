@@ -28,7 +28,6 @@ import LoginModal from '../auth/LoginModal';
 import Portal from '../portal/Portal';
 import CreatePostModal from '../post/CreatePostModal';
 import { Redirect, Route } from 'react-router';
-import Profile from '../profile/Profile';
 import Contacts from '../contacts/Contacts';
 import CreatePostFab from '../portal/CreatePostFab';
 
@@ -52,10 +51,7 @@ const App = () => {
         left: 50,
         top: 50,
       }}>
-        <Route path='/portal' component={Portal} />
-        <Route path='/profile' component={Profile} />
-        <Route path='/contacts' component={Contacts} />
-        <Redirect exact path='/' to='/portal' />
+        <Route path='/' component={Portal} />
       </IonRouterOutlet>
       <LoginModal />
       <CreatePostModal />

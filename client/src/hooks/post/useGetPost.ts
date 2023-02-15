@@ -5,18 +5,18 @@ import { useAppDispatch } from "../../redux/store";
 import { Post } from "../../types/post";
 
 const GET_POSTS = gql`
-  mutation GetPosts {
-    getPosts {
+  mutation GetPost($postId: String!) {
+    getPost(postId: $postId) {
       ...FullPostFields
     }
   }
   ${FULL_POST_FIELDS}
 `;
 
-interface UseGetPostsProps {
-  onCompleted: (posts: Post[]) => void;
+interface UseGetPostProps {
+  onCompleted: (post: Post) => void;
 }
-const useGetPosts = ({ onCompleted }: UseGetPostsProps) => {
+const useGetPost = ({ onCompleted }: UseGetPostProps) => {
   const dispatch = useAppDispatch();
 
   const [get] = useMutation(GET_POSTS, {
@@ -26,18 +26,22 @@ const useGetPosts = ({ onCompleted }: UseGetPostsProps) => {
     onCompleted: (data) => {
       console.log(data);
 
-      dispatch(mergePosts(data.getPosts));
+      dispatch(mergePosts([data.getPost]));
 
-      onCompleted(data.getPosts);
+      onCompleted(data.getPost);
     },
     fetchPolicy: "network-only",
   });
 
-  const getPosts = () => {
-    get();
+  const getPost = (postId: string) => {
+    get({
+      variables: {
+        postId,
+      }
+    });
   }
 
-  return getPosts;
+  return getPost;
 }
 
-export default useGetPosts;
+export default useGetPost;

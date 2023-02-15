@@ -42,7 +42,7 @@ export const selectCurrentProfile = (state: RootState): Profile | null => state.
 
 export const selectProfileById = createSelector([
   selectIdToProfile,
-  (_: RootState, id: string) => id,
-], (idToProfile, id) => idToProfile[id]);
+  (_: RootState, id: string | null) => id,
+], (idToProfile, id) => id ? idToProfile[id] : null);
 
 export default profileSlice.reducer

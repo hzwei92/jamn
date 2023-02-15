@@ -27,6 +27,13 @@ export class PostsResolver {
     return this.postsService.getPosts();
   }
 
+  @Mutation(() => Post, { name: 'getPost' })
+  async getPost(
+    @Args('postId') postId: string,
+  ) {
+    return this.postsService.getPostById(postId);
+  }
+  
   @UseGuards(GqlAuthGuard)
   @Mutation(() => CreatePostResult, { name: 'createPost' })
   async createPost(

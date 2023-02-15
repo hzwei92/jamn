@@ -1,5 +1,9 @@
+import { Post } from './post';
+
 export type Profile = {
   id: string;
+  indexPostId: string | null;
+  indexPost: Post | null;
   name: string;
   color: string;
   text: string;
