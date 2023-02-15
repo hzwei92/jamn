@@ -1,10 +1,11 @@
 import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
-import { arrowBackCircleOutline, arrowDownCircleOutline, arrowForwardCircleOutline, arrowUpCircleOutline, chevronUpOutline, documentOutline, scanOutline } from "ionicons/icons";
+import { arrowBackCircleOutline, arrowDownCircleOutline, arrowForwardCircleOutline, arrowUpCircleOutline, chevronUpOutline, documentOutline, scanOutline, shareOutline } from "ionicons/icons";
 import md5 from "md5";
 import { ORANGE } from "../../constants";
-import { selectPortalSlice } from "../../redux/portalSlice";
+import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
-import { useAppSelector } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { PortalSlice } from "../../types/portal";
 import ProfileDirections from "./ProfileDirections";
 
 interface ProfileProps {
@@ -14,15 +15,26 @@ interface ProfileProps {
 }
 
 const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
-  const currneProfile = useAppSelector(selectCurrentProfile);
+  const dispatch = useAppDispatch();
+
+  const currentProfile = useAppSelector(selectCurrentProfile);
 
   const profile = useAppSelector(state => selectProfileById(state, profileId));
 
   const slice = useAppSelector(selectPortalSlice);
 
-  if (!profile) return null;
+  const handlePushClick = () => {
+    const slice1: PortalSlice = {
+      profileFilter: slice.profileFilter,
+      originalQuery: '',
+      query: '',
+      entryIds: [entryId],
+    };
 
-  const date = new Date(profile.createDate);
+    dispatch(pushPortalSlice(slice1));
+  }
+
+  if (!profile) return null;
   return (
     <IonCard style={{
       margin: 15,
@@ -58,11 +70,9 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
       <div>
         <IonButtons style={{
           display: 'flex',
-          justifyContent: 'space-between',
         }}>
-          <div>
             <IonButton onClick={() => {}} style={{
-              display: profile.id === currneProfile?.id 
+              display: profile.id === currentProfile?.id 
                 ? 'none' 
                 : null,
               color: ORANGE,
@@ -71,10 +81,16 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
             }}>
               FOLLOW
             </IonButton>
-          </div>
-          <IonButton disabled={depth === 0 && slice.entryIds.length === 1}>
-            <IonIcon icon={documentOutline} />
-          </IonButton>
+            <IonButton style={{
+              marginLeft: 5,
+            }}>
+              <IonIcon icon={shareOutline} size='small'/>
+            </IonButton>
+            <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
+              marginLeft: 5,
+            }}>
+              <IonIcon icon={documentOutline} size='small'/>
+            </IonButton>
         </IonButtons>
       </div>
       <ProfileDirections entryId={entryId} profileId={profile.id} />
