@@ -1,4 +1,4 @@
-import { IonCard, IonCardHeader, IonFab, IonFabButton, IonIcon, IonRouterOutlet, isPlatform, setupIonicReact } from '@ionic/react';
+import { IonRouterOutlet, setupIonicReact } from '@ionic/react';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -28,8 +28,7 @@ import LoginModal from '../auth/LoginModal';
 import Portal from '../portal/Portal';
 import CreatePostModal from '../post/CreatePostModal';
 import { Redirect, Route } from 'react-router';
-import Contacts from '../contacts/Contacts';
-import CreatePostFab from '../portal/CreatePostFab';
+import Map from '../map/Map';
 
 setupIonicReact();
 
@@ -51,7 +50,9 @@ const App = () => {
         left: 50,
         top: 50,
       }}>
-        <Route path='/' component={Portal} />
+        <Route path='/portal' component={Portal} />
+        <Route path='/map' component={Map} />
+        <Redirect exact from='/' to='/portal' />
       </IonRouterOutlet>
       <LoginModal />
       <CreatePostModal />

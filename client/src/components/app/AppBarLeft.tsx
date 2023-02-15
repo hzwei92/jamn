@@ -24,6 +24,10 @@ export enum Mode {
 const AppBarLeft = () => {
   const dispatch = useAppDispatch();
 
+  const router = useIonRouter();
+
+  const path = router.routeInfo.pathname.split('/');
+
   const slice = useAppSelector(selectPortalSlice);
 
   const getPosts = useGetPosts({
@@ -93,7 +97,16 @@ const AppBarLeft = () => {
   }
 
   const handlePortalClick = () => {
+    if (path[1] !== 'portal') {
+      router.push('/portal');
+    }
     getPosts(slice?.dateRange?.endDate ?? null, null);
+  }
+
+  const handleMapClick = () => {
+    if (path[1] !== 'map') {
+      router.push('/map');
+    }
   }
 
   return (
@@ -138,6 +151,7 @@ const AppBarLeft = () => {
         <IonButton
           onMouseEnter={handleMenuMouseEnter(Mode.MAP)}
           onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMapClick}
           style={{
             width: 50,
             height: 50,

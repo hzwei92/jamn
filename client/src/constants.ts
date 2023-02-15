@@ -40,3 +40,5 @@ export const ALGOLIA_INDEX = process.env.NODE_ENV === 'development'
   : 'prod_jamn';
 
 export const ORANGE = '#f4900c';
+
+export const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoid2VpaHoiLCJhIjoiY2xlNjVuaWI1MDJjcjNybXJsbGo4bXgyMiJ9.w_9vD530_V81gcdS-yZOLw';
