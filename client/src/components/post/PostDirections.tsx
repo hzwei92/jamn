@@ -58,6 +58,7 @@ const PostDirections = ({ entryId, postId }: PostDirectionsProps) => {
           : null
       }}>
         <IonIcon icon={arrowBackCircleOutline} size='small'/>
+        &nbsp;
         {post.prevCount}
       </IonButton>
       <IonButton onClick={handleDirectionClick(PostDirection.LEAF)} style={{
@@ -72,6 +73,7 @@ const PostDirections = ({ entryId, postId }: PostDirectionsProps) => {
           : null
       }}>
         <IonIcon icon={arrowDownCircleOutline} size='small' />
+        &nbsp;
         {post.leafCount}
       </IonButton>
       <IonButton onClick={handleDirectionClick(PostDirection.ROOT)} style={{
@@ -86,6 +88,7 @@ const PostDirections = ({ entryId, postId }: PostDirectionsProps) => {
           : null
       }}>
         <IonIcon icon={arrowUpCircleOutline} size='small' />
+        &nbsp;
         {post.rootCount}
       </IonButton>
       <IonButton onClick={handleDirectionClick(PostDirection.NEXT)} style={{
@@ -100,6 +103,7 @@ const PostDirections = ({ entryId, postId }: PostDirectionsProps) => {
           : null
       }}>
         <IonIcon icon={arrowForwardCircleOutline} size='small' />
+        &nbsp;
         {post.nextCount}
       </IonButton>
     </IonButtons>

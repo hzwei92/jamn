@@ -39,7 +39,7 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
     <IonCard style={{
       margin: 15,
       marginBottom: 0,
-      borderTop: '5px solid',
+      borderTop: '7px solid',
       borderColor: profile.color,
       maxWidth: 420,
       padding: 10,
@@ -51,11 +51,10 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
         <img 
           src={`https://www.gravatar.com/avatar/${md5(profile.email)}?d=retro`}
           style={{
-            marginRight: 5,
-            borderRadius: 10,
-            border: `2px solid ${profile.color}`,
-            width: 20,
-            height: 20,
+            borderRadius: 30,
+            border: `4px solid ${profile.color}`,
+            width: 60,
+            height: 60,
           }}
         />
       </div>
