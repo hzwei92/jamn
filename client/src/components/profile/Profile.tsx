@@ -36,6 +36,7 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
       originalQuery: '',
       query: '',
       entryIds: [entryId],
+      shouldScrollToTop: true,
     };
 
     dispatch(pushPortalSlice(slice1));

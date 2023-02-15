@@ -60,6 +60,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
       originalQuery: '',
       query: '',
       entryIds: [entryId],
+      shouldScrollToTop: true,
     };
 
     dispatch(pushPortalSlice(slice1));
@@ -93,6 +94,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
       originalQuery: '',
       query: '',
       entryIds: [entry1.id],
+      shouldScrollToTop: true,
     };
 
     dispatch(pushPortalSlice(slice1));

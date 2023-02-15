@@ -1,23 +1,85 @@
 import { IonButton, IonButtons, IonCard, IonIcon, isPlatform, useIonRouter } from "@ionic/react"
 import { apertureOutline, mapOutline, moonOutline, notificationsOutline, peopleOutline, personCircleOutline, sunnyOutline } from "ionicons/icons";
 import { useContext, useState } from "react";
+import { v4 } from "uuid";
+import { ProfileFilter } from "../../enums";
+import useGetPosts from "../../hooks/post/useGetPosts";
+import { mergeEntries } from "../../redux/entrySlice";
+import { pushPortalSlice, selectPortalSlice, splicePortalSlice } from "../../redux/portalSlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
-import { useAppSelector } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { Entry } from "../../types/entry";
+import { PortalSlice } from "../../types/portal";
 import { AppContext } from "./AppProvider";
 import icon from './favicon.png';
 
 export enum Mode {
   NONE = 'NONE',
   PORTAL = 'PORTAL',
-  PROFILE = 'PROFILE',
-  CONTACTS = 'CONTACTS',
+  MAP = 'MAP',
+  ALERTS = 'ALERTS',
 }
 
 
 const AppBarLeft = () => {
-  const router = useIonRouter();
+  const dispatch = useAppDispatch();
 
-  const path = router.routeInfo.pathname.split('/');
+  const slice = useAppSelector(selectPortalSlice);
+
+  const getPosts = useGetPosts({
+    onCompleted: (posts) => {
+      const entries = posts.map((post) => {
+        const entry: Entry = {
+          id: v4(),
+          parentEntryId: null,
+          postId: post.id,
+          profileId: post.profileId,
+          linkId: null,
+          pinId: null,
+          showDirection: null,
+          prevEntryIds: [],
+          nextEntryIds: [],
+          rootEntryIds: [],
+          leafEntryIds: [],
+          shouldFetch: false,
+        };
+        return entry;
+      });
+
+      dispatch(mergeEntries(entries));
+
+      if (slice.dateRange?.startDate && slice.dateRange?.endDate) {
+        const slice1: PortalSlice = {
+          ...slice,
+          dateRange: {
+            ...slice.dateRange,
+            endDate: posts.length === 0
+              ? slice.dateRange.endDate
+              : posts[0].createDate,
+          },
+          entryIds: [...entries.map((entry) => entry.id), ...slice.entryIds],
+          shouldScrollToTop: true,
+        };
+
+        dispatch(splicePortalSlice(slice1));
+      }
+      else {
+        const slice1: PortalSlice = {
+          dateRange: {
+            startDate: posts[posts.length - 1].createDate,
+            endDate: posts[0].createDate,
+          },
+          profileFilter: ProfileFilter.ALL,
+          originalQuery: '',
+          query: '',
+          entryIds: entries.map((entry) => entry.id),
+          shouldScrollToTop: true,
+        };
+
+        dispatch(pushPortalSlice(slice1));
+      }
+    },
+  });
 
   const { isDarkMode, setIsDarkMode } = useContext(AppContext);
 
@@ -30,8 +92,8 @@ const AppBarLeft = () => {
     setLabel(Mode.NONE);
   }
 
-  const handleMenuClick = (m: Mode) => () => {
-    
+  const handlePortalClick = () => {
+    getPosts(slice?.dateRange?.endDate ?? null, null);
   }
 
   return (
@@ -65,41 +127,30 @@ const AppBarLeft = () => {
         <IonButton
           onMouseEnter={handleMenuMouseEnter(Mode.PORTAL)}
           onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(Mode.PORTAL)}
+          onClick={handlePortalClick}
           style={{
             width: 50,
             height: 50,
-            borderLeft: path[1] === 'portal'
-              ? '5px solid'
-              : null,
           }}
         >
           <IonIcon icon={apertureOutline}/>
         </IonButton>
         <IonButton
-          onMouseEnter={handleMenuMouseEnter(Mode.PROFILE)}
+          onMouseEnter={handleMenuMouseEnter(Mode.MAP)}
           onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(Mode.PROFILE)}
           style={{
             width: 50,
             height: 50,
-            borderLeft: path[1] === 'profile'
-              ? '5px solid'
-              : null,
           }}
         >
           <IonIcon icon={mapOutline} />
         </IonButton>
         <IonButton
-          onMouseEnter={handleMenuMouseEnter(Mode.CONTACTS)}
+          onMouseEnter={handleMenuMouseEnter(Mode.ALERTS)}
           onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(Mode.CONTACTS)}
           style={{
             height: 50,
             width: 50,
-            borderLeft: path[1] === 'contacts'
-              ? '5px solid'
-              : null,
           }}
         >
           <IonIcon icon={notificationsOutline} />
@@ -136,7 +187,7 @@ const AppBarLeft = () => {
         PORTAL
       </IonCard>
       <IonCard style={{
-        display: label === Mode.PROFILE && !isPlatform('mobile')
+        display: label === Mode.MAP && !isPlatform('mobile')
           ? 'block'
           : 'none',
         position: 'absolute',
@@ -145,10 +196,10 @@ const AppBarLeft = () => {
         padding: 5,
         border: `1px solid`,
       }}>
-        PROFILE
+        MAP
       </IonCard>
       <IonCard style={{
-        display: label === Mode.CONTACTS && !isPlatform('mobile')
+        display: label === Mode.ALERTS && !isPlatform('mobile')
           ? 'block'
           : 'none',
         position: 'absolute',
@@ -157,7 +208,7 @@ const AppBarLeft = () => {
         padding: 5,
         border: `1px solid`,
       }}>
-        CONTACTS
+        NOTIFICATIONS
       </IonCard>
     </IonCard>
   )

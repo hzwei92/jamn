@@ -11,5 +11,6 @@ export type PortalSlice = {
   originalQuery: string;
   query: string;
   entryIds: string[];
+  shouldScrollToTop: boolean;
 }
 

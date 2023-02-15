@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { IonContent, IonInfiniteScroll, IonInfiniteScrollContent, IonPage } from "@ionic/react";
 import useGetPosts from "../../hooks/post/useGetPosts";
 import CreatePostFab from "./CreatePostFab";
@@ -14,6 +14,8 @@ import { selectIsDone } from "../../redux/authSlice";
 
 const Portal = () => {
   const dispatch = useAppDispatch();
+
+  const contentRef = useRef<HTMLIonContentElement>(null);
 
   const slice = useAppSelector(selectPortalSlice);
 
@@ -62,6 +64,7 @@ const Portal = () => {
           originalQuery: '',
           query: '',
           entryIds: entries.map((entry) => entry.id),
+          shouldScrollToTop: false,
         };
   
         dispatch(pushPortalSlice(slice1));
@@ -77,10 +80,20 @@ const Portal = () => {
   }, [isDone]);
 
 
+  useEffect(() => {
+    if (!slice?.shouldScrollToTop) return;
+    contentRef.current?.scrollToTop(500);
+
+    const slice1 = {
+      ...slice,
+      shouldScrollToTop: false,
+    };
+    dispatch(splicePortalSlice(slice1));
+  }, [slice?.shouldScrollToTop]);
 
   return (
     <IonPage>
-      <IonContent color={"tertiary"} style={{
+      <IonContent ref={contentRef} color={"tertiary"} style={{
         position: 'relative',
         alignItems: 'center',
       }}>

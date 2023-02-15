@@ -72,6 +72,7 @@ const AppBarTop = () => {
       originalQuery: '',
       query: '',
       entryIds: [entry1.id],
+      shouldScrollToTop: true,
     };
 
     dispatch(pushPortalSlice(slice1));

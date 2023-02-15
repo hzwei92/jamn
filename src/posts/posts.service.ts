@@ -34,8 +34,10 @@ export class PostsService {
       };
     }
     else if (minDate) {
+      const date = new Date(minDate);
+      date.setTime(date.getTime() + 1);
       where = {
-        createDate: MoreThan(new Date(minDate))
+        createDate: MoreThan(date)
       };
     }
     else if (maxDate) {
@@ -43,6 +45,8 @@ export class PostsService {
         createDate: LessThan(new Date(maxDate))
       };
     }
+
+    console.log(where);
 
     return this.postsRepository.find({
       where,
