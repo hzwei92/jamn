@@ -113,10 +113,11 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
   return (
     <div style={{
       marginLeft: 15,
-      borderLeft: '2px solid',
+      borderLeft: '5px solid',
       borderColor: postProfile?.color,
       display: 'flex',
       flexDirection: 'column',
+      borderBottomLeftRadius: 5,
     }}>
       <div style={{
         marginLeft: 15,

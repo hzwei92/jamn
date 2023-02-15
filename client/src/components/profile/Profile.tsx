@@ -2,6 +2,7 @@ import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
 import { arrowBackCircleOutline, arrowDownCircleOutline, arrowForwardCircleOutline, arrowUpCircleOutline, chevronUpOutline, documentOutline, easelOutline, scanOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import md5 from "md5";
 import { ORANGE } from "../../constants";
+import { selectEntryById } from "../../redux/entrySlice";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
@@ -18,6 +19,8 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
   const dispatch = useAppDispatch();
 
   const currentProfile = useAppSelector(selectCurrentProfile);
+
+  const entry = useAppSelector(state => selectEntryById(state, entryId));
 
   const profile = useAppSelector(state => selectProfileById(state, profileId));
 
@@ -40,9 +43,13 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
       margin: 15,
       marginBottom: 0,
       borderTop: '7px solid',
+      borderLeft: '2px solid',
       borderColor: profile.color,
       maxWidth: 420,
       padding: 10,
+      borderBottomLeftRadius: !!entry?.showDirection
+        ? 0
+        : 5,
     }}>
       <div style={{
         display: 'flex',

@@ -114,6 +114,9 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
       borderColor: postProfile.color,
       maxWidth: 420,
       padding: 10,
+      borderBottomLeftRadius: !!entry?.showDirection
+        ? 0
+        : null,
     }}>
       <div>
         <div style={{

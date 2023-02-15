@@ -15,6 +15,7 @@ const Activity = ({ profile }: ActivityProps) => {
       borderColor: profile.color,
       display: 'flex',
       flexDirection: 'column',
+      borderBottomLeftRadius: 5,
     }}>
       <div style={{
         marginTop: 10,
