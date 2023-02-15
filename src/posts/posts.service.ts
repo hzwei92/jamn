@@ -5,7 +5,7 @@ import { LinksService } from 'src/links/links.service';
 import { PinsService } from 'src/pins/pins.service';
 import { Profile } from 'src/profiles/profile.entity';
 import { ProfilesService } from 'src/profiles/profiles.service';
-import { Repository } from 'typeorm';
+import { Between, LessThan, MoreThan, Repository } from 'typeorm';
 import { Post } from './post.entity';
 
 @Injectable()
@@ -26,8 +26,26 @@ export class PostsService {
     });
   }
   
-  async getPosts(): Promise<Post[]> {
+  async getPosts(minDate: string | null, maxDate: string | null): Promise<Post[]> {
+    let where = {};
+    if (minDate && maxDate) {
+      where = {
+        createDate: Between(new Date(minDate), new Date(maxDate))
+      };
+    }
+    else if (minDate) {
+      where = {
+        createDate: MoreThan(new Date(minDate))
+      };
+    }
+    else if (maxDate) {
+      where = {
+        createDate: LessThan(new Date(maxDate))
+      };
+    }
+
     return this.postsRepository.find({
+      where,
       order: {
         createDate: 'DESC',
       },

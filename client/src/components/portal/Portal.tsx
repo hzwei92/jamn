@@ -1,6 +1,5 @@
-import { AppContext } from "../app/AppProvider";
-import { useContext, useEffect } from "react";
-import { IonContent, IonPage } from "@ionic/react";
+import { useEffect } from "react";
+import { IonContent, IonInfiniteScroll, IonInfiniteScrollContent, IonPage } from "@ionic/react";
 import useGetPosts from "../../hooks/post/useGetPosts";
 import CreatePostFab from "./CreatePostFab";
 import { Entry } from "../../types/entry";
@@ -9,15 +8,19 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { mergeEntries } from "../../redux/entrySlice";
 import { PortalSlice } from "../../types/portal";
 import { ProfileFilter } from "../../enums";
-import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
+import { pushPortalSlice, selectPortalSlice, splicePortalSlice } from "../../redux/portalSlice";
 import EntryComponent from "../entry/Entry";
-import { selectIsDone, selectIsValid } from "../../redux/authSlice";
+import { selectIsDone } from "../../redux/authSlice";
 
 const Portal = () => {
   const dispatch = useAppDispatch();
 
+  const slice = useAppSelector(selectPortalSlice);
+
   const getPosts = useGetPosts({
     onCompleted: (posts) => {
+      if (posts.length === 0) return;
+
       const entries: Entry[] = posts.map((post) => {
         return {
           id: v4(),
@@ -37,27 +40,43 @@ const Portal = () => {
 
       dispatch(mergeEntries(entries));
 
-      const slice: PortalSlice = {
-        profileFilter: ProfileFilter.ALL,
-        originalQuery: '',
-        query: '',
-        entryIds: entries.map((entry) => entry.id),
-      };
+      if (slice?.dateRange?.startDate && slice?.dateRange?.endDate) {
+        const slice1: PortalSlice = {
+          ...slice,
+          dateRange: {
+            startDate: posts[posts.length - 1].createDate,
+            endDate: slice.dateRange.endDate,
+          },
+          entryIds: [...slice.entryIds, ...entries.map((entry) => entry.id)],
+        };
 
-      dispatch(pushPortalSlice(slice));
+        dispatch(splicePortalSlice(slice1));
+      }
+      else {
+        const slice1: PortalSlice = {
+          dateRange: {
+            startDate: posts[posts.length - 1].createDate,
+            endDate: posts[0].createDate,
+          },
+          profileFilter: ProfileFilter.ALL,
+          originalQuery: '',
+          query: '',
+          entryIds: entries.map((entry) => entry.id),
+        };
+  
+        dispatch(pushPortalSlice(slice1));
+      }
     }
   });
 
-  const isValid = useAppSelector(selectIsValid);
   const isDone = useAppSelector(selectIsDone);
   
   useEffect(() => {
     if (!isDone) return;
-    getPosts();
+    getPosts(null, null);
   }, [isDone]);
 
 
-  const slice = useAppSelector(selectPortalSlice);
 
   return (
     <IonPage>
@@ -78,8 +97,27 @@ const Portal = () => {
             })
           }
           <div style={{
-            height: 100,
+            height: 20,
           }}/>
+          <IonInfiniteScroll onIonInfinite={
+            (e) => {
+              if (slice?.dateRange?.startDate && slice?.dateRange?.endDate) {
+                getPosts(null, slice.dateRange.startDate);
+                setTimeout(() => {
+                  e.target.complete();
+                }, 500);
+              }
+              else {
+                e.target.complete();
+              }
+    
+            }
+          }>
+            <IonInfiniteScrollContent loadingSpinner={'dots'} style={{
+              width: 440,
+            }}/>
+          </IonInfiniteScroll>
+
       </IonContent>
     </IonPage>
   );

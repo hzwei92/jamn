@@ -5,8 +5,8 @@ import { useAppDispatch } from "../../redux/store";
 import { Post } from "../../types/post";
 
 const GET_POSTS = gql`
-  mutation GetPosts {
-    getPosts {
+  mutation GetPosts($minDate: String, $maxDate: String) {
+    getPosts(minDate: $minDate, maxDate: $maxDate) {
       ...FullPostFields
     }
   }
@@ -33,8 +33,13 @@ const useGetPosts = ({ onCompleted }: UseGetPostsProps) => {
     fetchPolicy: "network-only",
   });
 
-  const getPosts = () => {
-    get();
+  const getPosts = (minDate: string | null, maxDate: string | null) => {
+    get({
+      variables: {
+        minDate,
+        maxDate,
+      },
+    });
   }
 
   return getPosts;

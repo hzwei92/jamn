@@ -52,6 +52,10 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
 
   const handlePushClick = () => {
     const slice1: PortalSlice = { 
+      dateRange: {
+        startDate: null,
+        endDate: null,
+      },
       profileFilter: slice.profileFilter,
       originalQuery: '',
       query: '',
@@ -81,6 +85,10 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     dispatch(mergeEntries([entry1]));
 
     const slice1: PortalSlice = {
+      dateRange: {
+        startDate: null,
+        endDate: null,
+      },
       profileFilter: slice.profileFilter,
       originalQuery: '',
       query: '',

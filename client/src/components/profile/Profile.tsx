@@ -28,6 +28,10 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
 
   const handlePushClick = () => {
     const slice1: PortalSlice = {
+      dateRange: {
+        startDate: null,
+        endDate: null,
+      },
       profileFilter: slice.profileFilter,
       originalQuery: '',
       query: '',

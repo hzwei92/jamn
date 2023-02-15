@@ -40,8 +40,10 @@ export class PostsResolver {
   @UseInterceptors(GqlInterceptor)
   @Mutation(() => [Post], { name: 'getPosts' })
   async getPosts(
+    @Args('minDate', { nullable: true }) minDate: string | null,
+    @Args('maxDate', { nullable: true }) maxDate: string | null,
   ) {
-    return this.postsService.getPosts();
+    return this.postsService.getPosts(minDate, maxDate);
   }
 
   @Mutation(() => Post, { name: 'getPost' })

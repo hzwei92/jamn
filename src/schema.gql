@@ -36,7 +36,7 @@ type Mutation {
   getLeafPins(postId: String!): [Pin!]!
   getNextLinks(postId: String!): [Link!]!
   getPost(postId: String!): Post!
-  getPosts: [Post!]!
+  getPosts(maxDate: String, minDate: String): [Post!]!
   getPrevLinks(postId: String!): [Link!]!
   getRootPins(postId: String!): [Pin!]!
   login(credential: String!): ProfileWithTokens!

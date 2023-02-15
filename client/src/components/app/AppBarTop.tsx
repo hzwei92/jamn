@@ -64,6 +64,10 @@ const AppBarTop = () => {
     dispatch(mergeEntries([entry1]));
 
     const slice1: PortalSlice = {
+      dateRange: {
+        startDate: null,
+        endDate: null,
+      },
       profileFilter: stack[index].profileFilter,
       originalQuery: '',
       query: '',
