@@ -160,6 +160,7 @@ const useCreatePost = () => {
         const slice1: PortalSlice = {
           ...slice,
           entryIds: [entry.id, ...slice.entryIds],
+          shouldScrollToTop: true,
         };
 
         dispatch(splicePortalSlice(slice1));

@@ -127,7 +127,7 @@ const Portal = () => {
             }
           }>
             <IonInfiniteScrollContent loadingSpinner={'dots'} style={{
-              width: 440,
+              maxWidth: 440,
             }}/>
           </IonInfiniteScroll>
 
