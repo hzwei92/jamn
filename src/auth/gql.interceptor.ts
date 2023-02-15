@@ -28,7 +28,7 @@ export class GqlInterceptor implements NestInterceptor {
   
         req.headers.profileId = tokenPayload.profileId;
       } catch (err) {
-        if (err.name !== 'TokenExpiredError') {
+        if (err.name !== 'TokenExpiredError' && err.message !== 'jwt malformed') {
           throw err;
         }
       }
