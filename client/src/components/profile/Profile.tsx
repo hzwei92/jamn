@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
-import { arrowBackCircleOutline, arrowDownCircleOutline, arrowForwardCircleOutline, arrowUpCircleOutline, chevronUpOutline, documentOutline, easelOutline, scanOutline, settingsOutline, shareOutline } from "ionicons/icons";
+import { returnUpBackOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import md5 from "md5";
 import { ORANGE } from "../../constants";
 import { selectEntryById } from "../../redux/entrySlice";
@@ -42,11 +42,10 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
     <IonCard style={{
       margin: 15,
       marginBottom: 0,
-      borderTop: '7px solid',
+      borderTop: `7px solid ${profile.color}`,
       borderLeft: !!entry?.showDirection
         ? `2px solid ${profile.color}`
         : 'none',
-      borderColor: profile.color,
       maxWidth: 420,
       padding: 10,
       borderBottomLeftRadius: !!entry?.showDirection
@@ -99,7 +98,7 @@ const Profile = ({ entryId, profileId, depth}: ProfileProps) => {
           <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
             marginLeft: 5,
           }}>
-            <IonIcon icon={easelOutline} size='small'/>
+            <IonIcon icon={returnUpBackOutline} size='small'/>
           </IonButton>
         </IonButtons>
         <IonButtons>

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { caretDownOutline, caretUpOutline, chevronDownOutline, chevronUpOutline, closeOutline, easelOutline, informationCircleOutline, settingsOutline, shareOutline } from "ionicons/icons";
+import { caretDownOutline, caretUpOutline, chevronDownOutline, chevronUpOutline, closeOutline, easelOutline, informationCircleOutline, returnUpBackOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
@@ -160,9 +160,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
         }}>
           <IonButton disabled={!profile} onClick={handleUpvoteClick} style={{
             color: post.currentProfileVote?.value === 1
-              ? isDarkMode
-                ? 'white'
-                : 'black'
+              ? profile?.color
               : null,
           }}>
             <IonIcon icon={post.currentProfileVote?.value === 1 ? caretUpOutline : chevronUpOutline} size='small'/>
@@ -172,9 +170,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
           </IonButton>
           <IonButton disabled={!profile} onClick={handleDownvoteClick} style={{
             color: post.currentProfileVote?.value === -1
-              ? isDarkMode
-                ? 'white'
-                : 'black'
+              ? profile?.color
               : null,
           }}>
             <IonIcon icon={post.currentProfileVote?.value === -1 ? caretDownOutline : chevronDownOutline} size='small'/>
@@ -250,7 +246,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             <IonButton disabled={depth === 0 && slice.entryIds.length === 1} onClick={handlePushClick} style={{
               marginLeft: 5,
             }}>
-              <IonIcon icon={easelOutline} size='small'/>
+              <IonIcon icon={returnUpBackOutline} size='small'/>
             </IonButton>
             <IonButton onClick={handleDeletePinClick} style={{
                 display: !!profile && !!pin && profile.id === pinRootPost?.profileId && depth !== 0
