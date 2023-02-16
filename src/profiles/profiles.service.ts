@@ -56,12 +56,6 @@ export class ProfilesService {
     return this.profilesRepository.save(profile);
   }
 
-  async setIndexPost(profile: Profile, post: Post) {
-    profile.indexPostId = post.id;
-
-    return this.profilesRepository.save(profile);
-  }
-
   async setRefreshToken(profileId: string, refreshToken: string): Promise<void> {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 

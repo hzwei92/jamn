@@ -6,12 +6,6 @@ export class Profile {
   @Field()
   id: string;
 
-  @Field({ nullable: true })
-  indexPostId: string;
-
-  @Field(() => Post, { nullable: true })
-  indexPost: Post;
-
   @Field()
   name: string;
 
@@ -41,7 +35,7 @@ export class Profile {
 
   @Field(() => Int)
   followerCount: number;
-  
+
   @Field()
   createDate: Date;
 

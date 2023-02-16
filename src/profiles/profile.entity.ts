@@ -8,13 +8,6 @@ export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
-  indexPostId: string;
-
-  @ManyToOne(() => Post, { nullable: true })
-  @JoinColumn({ referencedColumnName: 'id' })
-  indexPost: Post;
-
   @Column()
   @Index({ unique: true })
   name: string;

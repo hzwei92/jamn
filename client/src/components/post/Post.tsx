@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { AppContext } from "../app/AppProvider";
 import PostDirections from "./PostDirections";
 import PostConnect from "./PostConnect";
-import { caretDownOutline, caretUpOutline, chevronDownOutline, chevronUpOutline, closeOutline, easelOutline, informationCircleOutline, returnUpBackOutline, settingsOutline, shareOutline } from "ionicons/icons";
+import { caretDownOutline, caretUpOutline, chevronDownOutline, chevronUpOutline, closeOutline, returnUpBackOutline, settingsOutline, shareOutline } from "ionicons/icons";
 import { pushPortalSlice, selectPortalSlice } from "../../redux/portalSlice";
 import { PortalSlice } from "../../types/portal";
 import md5 from 'md5';
@@ -18,7 +18,6 @@ import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
 import { Entry } from "../../types/entry";
 import { v4 } from "uuid";
-import useSetCurrentProfileIndexPost from "../../hooks/profile/useSetCurrentProfileIndexPost";
 import useVote from "../../hooks/vote/useVote";
 import useDeleteTab from "../../hooks/tab/useDeleteTab";
 import { selectTabById } from "../../redux/tabSlice";
@@ -31,8 +30,6 @@ interface PostProps {
 
 const Post = ({ entryId, postId, depth }: PostProps) => {
   const dispatch = useAppDispatch();
-
-  const setCurrentProfileIndexPost = useSetCurrentProfileIndexPost();
 
   const vote = useVote();
   
@@ -110,11 +107,6 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     else if (entry?.tabId) {
       deleteTab(entry.tabId);
     }
-  }
-
-  const handleIndexClick = () => {
-    if (!post) return;
-    setCurrentProfileIndexPost(post.id);
   }
 
   const handleUpvoteClick = () => {
@@ -288,13 +280,6 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             <div style={{
               padding: 10,
             }}>
-              <IonButtons>
-                <IonButton onClick={handleIndexClick}>
-                  <IonIcon icon={informationCircleOutline} size='small'/>
-                 &nbsp;USE AS INDEX
-                </IonButton>
-
-              </IonButtons>
             </div>
           </IonPopover>
         </IonButtons>

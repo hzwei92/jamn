@@ -45,7 +45,6 @@ type Mutation {
   getTabs(profileId: String!): [Tab!]!
   login(credential: String!): ProfileWithTokens!
   refreshAccessToken(refreshToken: String!): ProfileWithTokens!
-  setCurrentProfileIndexPost(postId: String!): Profile!
   vote(postId: String!, value: Int!): Vote!
 }
 
@@ -88,8 +87,6 @@ type Profile {
   email: String!
   followerCount: Int!
   id: String!
-  indexPost: Post
-  indexPostId: String
   leaderCount: Int!
   name: String!
   palette: String!

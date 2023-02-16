@@ -27,18 +27,4 @@ export class ProfilesResolver {
   ) {
     return this.profilesService.getProfileById(profile.id);
   }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => Profile, { name: 'setCurrentProfileIndexPost' })
-  async setIndexPost(
-    @CurrentProfile() profile: ProfileEntity,
-    @Args('postId') postId: string,
-  ) {
-    const post = await this.postsService.getPostById(postId);
-    if (!post) {
-      throw new BadRequestException('Post not found');
-    }
-
-    return this.profilesService.setIndexPost(profile, post);
-  }
 }
