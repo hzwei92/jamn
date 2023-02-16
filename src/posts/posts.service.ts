@@ -5,6 +5,7 @@ import { LinksService } from 'src/links/links.service';
 import { PinsService } from 'src/pins/pins.service';
 import { Profile } from 'src/profiles/profile.entity';
 import { ProfilesService } from 'src/profiles/profiles.service';
+import { TabsService } from 'src/tabs/tabs.service';
 import { Between, LessThan, MoreThan, Repository } from 'typeorm';
 import { Post } from './post.entity';
 
@@ -16,6 +17,7 @@ export class PostsService {
     private readonly profilesService: ProfilesService,
     private readonly linksService: LinksService,
     private readonly pinsService: PinsService,
+    private readonly tabsService: TabsService,
   ) {}
 
   async getPostById(id: string): Promise<Post> {
@@ -64,9 +66,13 @@ export class PostsService {
     post.text = text;
     post = await this.postsRepository.save(post);
 
-    await this.profilesService.incrementPostCount(profile.id);
+    await this.profilesService.incrementPostCount(profile.id, 1);
 
-    if (contextPostId && contextDirection) {
+    if (contextDirection === PostDirection.TAB) {
+      const tab = await this.tabsService.createTab(profile, post);
+      return { tab };
+    }
+    else if (contextPostId && contextDirection) {
       const contextPost = await this.postsRepository.findOne({
         where: {
           id: contextPostId
@@ -116,5 +122,9 @@ export class PostsService {
 
   async incrementUpvotes(postId: string, amount: number): Promise<void> {
     await this.postsRepository.increment({ id: postId }, 'upvotes', amount);
+  }
+
+  async incrementTabCount(postId: string, amount: number): Promise<void> {
+    await this.postsRepository.increment({ id: postId }, 'tabCount', amount);
   }
 }

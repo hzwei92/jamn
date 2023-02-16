@@ -10,6 +10,10 @@ export const PROFILE_FIELDS = gql`
     text
     palette
     balance
+    postCount
+    tabCount
+    leaderCount
+    followerCount
     createDate
     updateDate
     deleteDate

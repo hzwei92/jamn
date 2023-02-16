@@ -26,21 +26,19 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
     onCompleted: (pin) => {
       const entry1: Entry = {
         id: v4(),
+        parentEntryId: entry.id,
+        childEntryIds: [],
         postId: pin.leafPostId,
         profileId: pin.leafPost.profileId,
-        parentEntryId: entry.id,
         linkId: null,
         pinId: pin.id,
+        tabId: null,
         showDirection: null,
-        prevEntryIds: [],
-        nextEntryIds: [],
-        rootEntryIds: [],
-        leafEntryIds: [],
         shouldFetch: false,
       }
       const entry2: Entry = {
         ...entry,
-        leafEntryIds: [entry1.id, ...entry.leafEntryIds],
+        childEntryIds: [entry1.id, ...entry.childEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
@@ -52,23 +50,21 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
       const entries: Entry[] = pins.map((pin) => {
         return {
           id: v4(),
-          postId: pin.leafPostId,
-          profileId: pin.leafPost.profileId,
           parentEntryId: entry.id,
+          childEntryIds: [],
+          profileId: pin.leafPost.profileId,
+          postId: pin.leafPostId,
           linkId: null,
           pinId: pin.id,
+          tabId: null,
           showDirection: null,
-          prevEntryIds: [],
-          nextEntryIds: [],
-          rootEntryIds: [],
-          leafEntryIds: [],
           shouldFetch: false,
         };
       });
 
       const entry1: Entry = {
         ...entry,
-        leafEntryIds: entries.map((entry) => entry.id),
+        childEntryIds: entries.map((entry) => entry.id),
       };
 
       entries.push(entry1);
@@ -124,8 +120,9 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
         display: 'flex',
       }}>
         <IonButtons style={{
+          marginRight: 10,
         }}>
-          <IonButton disabled={!profile || post.profileId !== profile.id} onClick={handleCreateClick} style={{
+          <IonButton disabled={post.profileId !== profile?.id} onClick={handleCreateClick} style={{
             display: connectionPostIds.length === 1 ? 'none' : null,
             borderRadius: 5,
             backgroundColor: '#f4900c',
@@ -133,7 +130,7 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
           }}>
             <IonIcon icon={addOutline} />
           </IonButton>
-          <IonButton disabled={!profile || post.profileId !== profile.id} onClick={handleConnectClick} style={{
+          <IonButton disabled={post.profileId !== profile?.id} onClick={handleConnectClick} style={{
             display: connectionPostIds.length === 1 ? null : 'none',
             borderRadius: 5,
             backgroundColor: '#f4900c',
@@ -148,14 +145,13 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          marginLeft: 10,
           color: 'grey',
         }}>
           (sub posts)
         </div>
       </div>
       {
-        entry.leafEntryIds.map((entryId) => {
+        entry.childEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )

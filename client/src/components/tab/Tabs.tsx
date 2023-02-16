@@ -1,38 +1,38 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { add, addOutline, arrowForwardOutline } from "ionicons/icons";
+import { addOutline, arrowBackOutline } from "ionicons/icons";
 import { useContext, useEffect } from "react";
 import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
-import useCreateLink from "../../hooks/link/useCreateLink";
-import useGetNextLinks from "../../hooks/link/useGetNextLinks";
+import useCreateTab from "../../hooks/tab/useCreateTab";
+import useGetTabs from "../../hooks/tab/useGetTabs";
 import { mergeEntries } from "../../redux/entrySlice";
-import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
+import { selectCurrentProfile } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
-import { Post } from "../../types/post";
+import { Profile } from "../../types/profile";
 import { AppContext } from "../app/AppProvider";
 import EntryComponent from "../entry/Entry";
 
-interface NextLinksProps {
+interface TabsProps {
   entry: Entry;
-  post: Post;
+  profile: Profile;
   depth: number;
 }
 
-const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
+const Tabs = ({ entry, profile, depth }: TabsProps) => {
   const dispatch = useAppDispatch();
 
-  const createLink = useCreateLink({
-    onCompleted: (link) => {
+  const createTab = useCreateTab({
+    onCompleted: (tab) => {
       const entry1: Entry = {
         id: v4(),
         parentEntryId: entry.id,
         childEntryIds: [],
-        postId: link.nextPostId,
-        profileId: link.nextPost.profileId,
-        linkId: link.id,
+        postId: tab.post.id,
+        profileId: tab.post.profileId,
+        linkId: null,
         pinId: null,
-        tabId: null,
+        tabId: tab.id,
         showDirection: null,
         shouldFetch: false,
       };
@@ -43,41 +43,49 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
       };
 
       dispatch(mergeEntries([entry1, entry2]));
-    },
-  });
+    }
+  })
 
-  const getNextLinks = useGetNextLinks({
-    onCompleted: (links) => {
-      const entries: Entry[] = links.map((link) => {
+  const getTabs = useGetTabs({
+    onCompleted: (tabs) => {
+      const entries: Entry[] = tabs.map((tab) => {
         return {
           id: v4(),
           parentEntryId: entry.id,
           childEntryIds: [],
-          postId: link.nextPostId,
-          profileId: link.nextPost.profileId,
-          linkId: link.id,
+          postId: tab.post.id,
+          profileId: tab.post.profileId,
+          linkId: null,
           pinId: null,
-          tabId: null,
+          tabId: tab.id,
           showDirection: null,
           shouldFetch: false,
-        };
+        }
       });
 
       const entry1: Entry = {
         ...entry,
         childEntryIds: entries.map((entry) => entry.id),
-      };
+      }
 
       entries.push(entry1);
-      
+
       dispatch(mergeEntries(entries));
     },
   });
 
+  const { 
+    setShowCreatePostModal,
+    setCreationEntryId,
+    setCreationDirection,
+    connectionPostIds,
+    setConnectionPostIds,
+  } = useContext(AppContext);
+
   useEffect(() => {
     if (!entry.shouldFetch) return;
 
-    getNextLinks(entry.postId);
+    getTabs(entry.profileId);
 
     const entry1: Entry = {
       ...entry,
@@ -86,31 +94,26 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
     dispatch(mergeEntries([entry1]));
   }, [entry.shouldFetch]);
 
-
-  const { setShowCreatePostModal, setCreationEntryId, setCreationDirection, connectionPostIds, setConnectionPostIds } = useContext(AppContext);
-  
-  const postProfile = useAppSelector(state => selectProfileById(state, post.profileId));
-
-  const profile = useAppSelector(selectCurrentProfile);
+  const currentProfile = useAppSelector(selectCurrentProfile);
 
   const handleConnectClick = () => {
     if (!!profile && connectionPostIds.length === 1) {
-      createLink(post.id, connectionPostIds[0]);
+      createTab(connectionPostIds[0]);
       setConnectionPostIds([]);
     }
   }
 
   const handleCreateClick = () => {
     setCreationEntryId(entry.id);
-    setCreationDirection(PostDirection.NEXT);
+    setCreationDirection(PostDirection.TAB);
     setShowCreatePostModal(true);
   };
 
   return (
     <div style={{
       marginLeft: 15,
-      borderLeft: '5px solid',
-      borderColor: postProfile?.color,
+      borderLeft: '2px solid',
+      borderColor: profile.color,
       display: 'flex',
       flexDirection: 'column',
       borderBottomLeftRadius: 5,
@@ -121,8 +124,9 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
         display: 'flex',
       }}>
       <IonButtons style={{
+        marginRight: 10,
       }}>
-        <IonButton onClick={handleCreateClick} style={{
+        <IonButton disabled={profile.id !== currentProfile?.id} onClick={handleCreateClick} style={{
           display: connectionPostIds.length > 0 ? 'none' : null,
           borderRadius: 5,
           backgroundColor: '#f4900c',
@@ -130,25 +134,24 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
         }}>
           <IonIcon icon={addOutline} />
         </IonButton>
-        <IonButton disabled={connectionPostIds.length < 1} onClick={handleConnectClick} style={{
-          display: connectionPostIds.length > 0 ? null : 'none',
+        <IonButton disabled={profile.id !== currentProfile?.id} onClick={handleConnectClick} style={{
+          display:  connectionPostIds.length > 0 ? null : 'none',
           borderRadius: 5,
           backgroundColor: '#f4900c',
           color: 'white',
         }}>
-          <IonIcon icon={arrowForwardOutline} style={{
+          <IonIcon icon={arrowBackOutline} style={{
             transform: 'scale(.8)',
           }}/>
         </IonButton>
       </IonButtons>
       <div style={{
-        marginLeft: 10,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         color: 'grey',
       }}>
-        (next posts)
+        (index)
       </div>
       </div>
       {
@@ -159,7 +162,7 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
         })
       }
     </div>
-  );
+  )
 }
 
-export default NextLinks;
+export default Tabs;

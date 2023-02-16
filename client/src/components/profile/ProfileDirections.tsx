@@ -47,7 +47,7 @@ const ProfileDirections = ({ entryId, profileId }: ProfileDirectionsProps) => {
       display: 'flex',
       justifyContent: 'space-between',
     }}>
-      <IonButton onClick={handleDirectionClick(PostDirection.PREV)} style={{
+      <IonButton onClick={handleDirectionClick(PostDirection.TAB)} style={{
         borderRadius: 5,
         border: entry?.showDirection === PostDirection.PREV
           ? '1px solid'

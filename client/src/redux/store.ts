@@ -7,6 +7,7 @@ import pinSlice from './pinSlice';
 import portalSlice from './portalSlice';
 import postSlice from './postSlice';
 import profileSlice from './profileSlice';
+import tabSlice from './tabSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     pin: pinSlice,
     post: postSlice,
     profile: profileSlice,
+    tab: tabSlice,
   },
 })
 

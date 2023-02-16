@@ -46,6 +46,9 @@ export class Post {
   @Column({ default: 0 })
   leafCount: number;
 
+  @Column({ default: 0 })
+  tabCount: number;
+
   @CreateDateColumn()
   createDate: Date;
 

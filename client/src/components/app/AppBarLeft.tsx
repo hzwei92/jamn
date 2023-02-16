@@ -36,15 +36,13 @@ const AppBarLeft = () => {
         const entry: Entry = {
           id: v4(),
           parentEntryId: null,
+          childEntryIds: [],
           postId: post.id,
           profileId: post.profileId,
           linkId: null,
           pinId: null,
+          tabId: null,
           showDirection: null,
-          prevEntryIds: [],
-          nextEntryIds: [],
-          rootEntryIds: [],
-          leafEntryIds: [],
           shouldFetch: false,
         };
         return entry;

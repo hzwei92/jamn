@@ -26,22 +26,20 @@ const PrevLinks = ({ entry, post, depth }: PrevLinksProps) => {
     onCompleted: (link) => {
       const entry1: Entry = {
         id: v4(),
+        parentEntryId: entry.id,
+        childEntryIds: [],
         postId: link.prevPostId,
         profileId: link.prevPost.profileId,
-        parentEntryId: entry.id,
         linkId: link.id,
         pinId: null,
+        tabId: null,
         showDirection: null,
-        prevEntryIds: [],
-        nextEntryIds: [],
-        rootEntryIds: [],
-        leafEntryIds: [],
         shouldFetch: false,
       };
 
       const entry2: Entry = {
         ...entry,
-        prevEntryIds: [entry1.id, ...entry.prevEntryIds],
+        childEntryIds: [entry1.id, ...entry.childEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
@@ -53,23 +51,21 @@ const PrevLinks = ({ entry, post, depth }: PrevLinksProps) => {
       const entries: Entry[] = links.map((link) => {
         return {
           id: v4(),
+          parentEntryId: entry.id,
+          childEntryIds: [],
           postId: link.prevPostId,
           profileId: link.prevPost.profileId,
-          parentEntryId: entry.id,
           linkId: link.id,
           pinId: null,
+          tabId: null,
           showDirection: null,
-          prevEntryIds: [],
-          nextEntryIds: [],
-          rootEntryIds: [],
-          leafEntryIds: [],
           shouldFetch: false,
         };
       });
 
       const entry1: Entry = {
         ...entry,
-        prevEntryIds: entries.map((entry) => entry.id),
+        childEntryIds: entries.map((entry) => entry.id),
       };
 
       entries.push(entry1);
@@ -156,7 +152,7 @@ const PrevLinks = ({ entry, post, depth }: PrevLinksProps) => {
         </div>
       </div>
       {
-        entry.prevEntryIds.map((entryId) => {
+        entry.childEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )

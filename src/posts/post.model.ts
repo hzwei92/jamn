@@ -37,6 +37,9 @@ export class Post {
   @Field(() => Int)
   leafCount: number;
 
+  @Field(() => Int)
+  tabCount: number;
+
   @Field()
   createDate: Date;
 

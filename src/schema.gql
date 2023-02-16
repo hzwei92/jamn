@@ -8,6 +8,7 @@ type CreatePostResult {
   post: Post
   prevLink: Link
   rootPin: Pin
+  tab: Tab
 }
 
 """
@@ -31,7 +32,9 @@ type Mutation {
   createLink(nextPostId: String!, prevPostId: String!): Link!
   createPin(leafPostId: String!, rootPostId: String!): Pin!
   createPost(contextDirection: String, contextPostId: String, text: String!): CreatePostResult!
+  createTab(postId: String!): Tab!
   deletePin(pinId: String!): Pin!
+  deleteTab(tabId: String!): Tab!
   getCurrentProfile: Profile!
   getLeafPins(postId: String!): [Pin!]!
   getNextLinks(postId: String!): [Link!]!
@@ -39,6 +42,7 @@ type Mutation {
   getPosts(maxDate: String, minDate: String): [Post!]!
   getPrevLinks(postId: String!): [Link!]!
   getRootPins(postId: String!): [Pin!]!
+  getTabs(profileId: String!): [Tab!]!
   login(credential: String!): ProfileWithTokens!
   refreshAccessToken(refreshToken: String!): ProfileWithTokens!
   setCurrentProfileIndexPost(postId: String!): Profile!
@@ -70,6 +74,7 @@ type Post {
   profileId: String!
   profileIndex: Int!
   rootCount: Int!
+  tabCount: Int!
   text: String!
   updateDate: DateTime!
   upvotes: Int!
@@ -81,12 +86,15 @@ type Profile {
   createDate: DateTime!
   deleteDate: DateTime
   email: String!
+  followerCount: Int!
   id: String!
   indexPost: Post
   indexPostId: String
+  leaderCount: Int!
   name: String!
   palette: String!
   postCount: Int!
+  tabCount: Int!
   text: String!
   updateDate: DateTime!
 }
@@ -99,6 +107,17 @@ type ProfileWithTokens {
 
 type Query {
   getProfile(id: String!): Profile!
+}
+
+type Tab {
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  post: Post!
+  postId: String!
+  profile: Profile!
+  profileId: String!
+  updateDate: DateTime!
 }
 
 type Vote {

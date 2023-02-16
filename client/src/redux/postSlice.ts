@@ -4,6 +4,7 @@ import type { RootState } from './store'
 import { Post } from '../types/post';
 import { mergeLinks } from './linkSlice';
 import { mergePins } from './pinSlice';
+import { mergeTabs } from './tabSlice';
 
 interface PostState {
   idToPost: Record<string, Post>
@@ -42,6 +43,13 @@ export const postSlice = createSlice({
           }
           if (pin.leafPost) {
             state.idToPost[pin.leafPostId] = pin.leafPost;
+          }
+        });
+      })
+      .addCase(mergeTabs, (state, action) => {
+        action.payload.forEach(tab => {
+          if (tab.post) {
+            state.idToPost[tab.postId] = tab.post;
           }
         });
       })

@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Link } from "src/links/link.model";
 import { Pin } from "src/pins/pin.model";
+import { Tab } from "src/tabs/tab.model";
 import { Post } from "../post.model";
 
 
@@ -20,4 +21,7 @@ export class CreatePostResult {
 
   @Field(() => Pin, { nullable: true })
   leafPin: Pin | null;
+
+  @Field(() => Tab, { nullable: true })
+  tab: Tab | null;
 }

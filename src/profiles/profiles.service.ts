@@ -72,7 +72,20 @@ export class ProfilesService {
     await this.profilesRepository.save(profile);
   }
 
-  async incrementPostCount(profileId: string): Promise<void> {
-    await this.profilesRepository.increment({ id: profileId }, 'postCount', 1);
+  async incrementPostCount(profileId: string, amount: number): Promise<void> {
+    await this.profilesRepository.increment({ id: profileId }, 'postCount', amount);
   }
+
+  async incrementTabCount(profileId: string, amount: number): Promise<void> {
+    await this.profilesRepository.increment({ id: profileId }, 'tabCount', amount);
+  }
+
+  async incrementLeaderCount(profileId: string, amount: number): Promise<void> {
+    await this.profilesRepository.increment({ id: profileId }, 'leaderCount', amount);
+  }
+
+  async incrementFollowerCount(profileId: string, amount: number): Promise<void> {
+    await this.profilesRepository.increment({ id: profileId }, 'followerCount', amount);
+  }
+
 }

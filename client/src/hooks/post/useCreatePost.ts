@@ -16,6 +16,8 @@ import { AppContext } from "../../components/app/AppProvider";
 import { mergeEntries, selectEntryById } from "../../redux/entrySlice";
 import { PortalSlice } from "../../types/portal";
 import { selectPortalSlice, splicePortalSlice } from "../../redux/portalSlice";
+import { TAB_FIELDS } from "../../fragments/tabFragments";
+import { mergeTabs } from "../../redux/tabSlice";
 
 const CREATE_POST = gql`
   mutation CreatePost($text: String!, $contextPostId: String, $contextDirection: String) {
@@ -59,11 +61,18 @@ const CREATE_POST = gql`
           ...FullPostFields
         }
       }
+      tab {
+        ...TabFields
+        post {
+          ...FullPostFields
+        }
+      }
     }
   }
   ${FULL_POST_FIELDS}
   ${LINK_FIELDS}
   ${PIN_FIELDS}
+  ${TAB_FIELDS}
 `;
 
 const useCreatePost = () => {
@@ -92,7 +101,7 @@ const useCreatePost = () => {
       present('Post created', 4200);
       console.log(data);
 
-      const { post, prevLink, nextLink, rootPin, leafPin } = data.createPost;
+      const { post, prevLink, nextLink, rootPin, leafPin, tab } = data.createPost;
 
       if (post) {
         dispatch(mergePosts([post]));
@@ -118,20 +127,24 @@ const useCreatePost = () => {
 
       dispatch(mergePins(pins));
 
-      const newPost = post ?? prevLink?.prevPost ?? nextLink?.nextPost ?? rootPin?.rootPost ?? leafPin?.leafPost;
+      if (tab) {
+        dispatch(mergeTabs([tab]));
+      }
+
+      const newPost = post ?? prevLink?.prevPost ?? nextLink?.nextPost ?? rootPin?.rootPost ?? leafPin?.leafPost ?? tab?.post;
+
+      console.log(newPost);
 
       const entry: Entry = {
         id: v4(),
+        parentEntryId: creationEntry?.id ?? null,
+        childEntryIds: [],
         postId: newPost.id,
         profileId: newPost.profileId,
         linkId: prevLink?.id ?? nextLink?.id ?? null,
         pinId: rootPin?.id ?? leafPin?.id ?? null,
-        parentEntryId: creationEntry?.id ?? null,
+        tabId: tab?.id ?? null,
         showDirection: null,
-        prevEntryIds: [],
-        nextEntryIds: [],
-        rootEntryIds: [],
-        leafEntryIds: [],
         shouldFetch: false,
       };
 
@@ -140,18 +153,9 @@ const useCreatePost = () => {
       if (creationEntry) {
         const creationEntry1: Entry = {
           ...creationEntry,
-          prevEntryIds: prevLink
-            ? [entry.id, ...creationEntry.prevEntryIds]
-            : creationEntry.prevEntryIds,
-          nextEntryIds: nextLink
-            ? [entry.id, ...creationEntry.nextEntryIds]
-            : creationEntry.nextEntryIds,
-          rootEntryIds: rootPin
-            ? [entry.id, ...creationEntry.rootEntryIds]
-            : creationEntry.rootEntryIds,
-          leafEntryIds: leafPin
-            ? [entry.id, ...creationEntry.leafEntryIds]
-            : creationEntry.leafEntryIds,
+          childEntryIds: prevLink || nextLink || rootPin || leafPin || tab
+            ? [entry.id, ...creationEntry.childEntryIds]
+            : creationEntry.childEntryIds,
         };
 
         dispatch(mergeEntries([creationEntry1]));

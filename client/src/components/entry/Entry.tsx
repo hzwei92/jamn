@@ -13,8 +13,9 @@ import PrevLinks from "../link/PrevLinks";
 import RootPins from "../pin/RootPins";
 import Leaders from "../lead/Leaders";
 import Followers from "../lead/Followers";
-import IndexPost from "../indexPost/IndexPost";
+import Tabs from "../tab/Tabs";
 import Activity from "../activity/Activity";
+import { selectTabById } from "../../redux/tabSlice";
 
 interface EntryProps {
   entryId: string;
@@ -29,8 +30,9 @@ const Entry = ({ entryId, depth }: EntryProps) => {
 
   const link = useAppSelector(state => selectLinkById(state, entry?.linkId ?? null));
   const pin = useAppSelector(state => selectPinById(state, entry?.pinId ?? null));
+  const tab = useAppSelector(state => selectTabById(state, entry?.tabId ?? null));
 
-  if (!entry || !profile || link?.deleteDate || pin?.deleteDate) return null;
+  if (!entry || !profile || link?.deleteDate || pin?.deleteDate || tab?.deleteDate) return null;
 
   if (!post) {
     return (
@@ -43,8 +45,8 @@ const Entry = ({ entryId, depth }: EntryProps) => {
           transition: 'height 5s'
         }}>
           {
-            entry.showDirection === PostDirection.PREV && (
-              <IndexPost entry={entry} profile={profile} depth={depth} />
+            entry.showDirection === PostDirection.TAB && (
+              <Tabs entry={entry} profile={profile} depth={depth} />
             )
           }
           {

@@ -49,15 +49,13 @@ const AppBarTop = () => {
     const entry1: Entry = {
       id: v4(),
       parentEntryId: null,
+      childEntryIds: [],
       postId: null,
       profileId: profile.id,
       linkId: null,
       pinId: null,
+      tabId: null,
       showDirection: null,
-      prevEntryIds: [],
-      nextEntryIds: [],
-      rootEntryIds: [],
-      leafEntryIds: [],
       shouldFetch: false,
     }
 

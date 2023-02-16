@@ -5,6 +5,7 @@ import { Profile } from '../types/profile';
 import { mergePosts } from './postSlice';
 import { mergeLinks } from './linkSlice';
 import { mergePins } from './pinSlice';
+import { mergeTabs } from './tabSlice';
 
 interface ProfileState {
   currentProfileId: string | null;
@@ -57,6 +58,16 @@ export const profileSlice = createSlice({
             state.idToProfile[pin.leafPost?.profile.id] = pin.leafPost.profile;
           }
         });
+      })
+      .addCase(mergeTabs, (state, action) => {
+        action.payload.forEach(tab => {
+          if (tab.profile) {
+            state.idToProfile[tab.profile.id] = tab.profile;
+          }
+          if (tab.post?.profile) {
+            state.idToProfile[tab.post?.profile.id] = tab.post.profile;
+          }
+        }); 
       })
   },
 })

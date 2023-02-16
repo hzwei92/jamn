@@ -12,6 +12,7 @@ import { PostsModule } from './posts/posts.module';
 import { LinksModule } from './links/links.module';
 import { PinsModule } from './pins/pins.module';
 import { VotesModule } from './votes/votes.module';
+import { TabsModule } from './tabs/tabs.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { VotesModule } from './votes/votes.module';
     LinksModule,
     PinsModule,
     VotesModule,
+    TabsModule,
   ],
 })
 export class AppModule {}

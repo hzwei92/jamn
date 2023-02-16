@@ -26,16 +26,14 @@ const Portal = () => {
       const entries: Entry[] = posts.map((post) => {
         return {
           id: v4(),
+          parentEntryId: null,
+          childEntryIds: [],
           postId: post.id,
           profileId: post.profileId,
-          parentEntryId: null,
           linkId: null,
           pinId: null,
+          tabId: null,
           showDirection: null,
-          prevEntryIds: [],
-          nextEntryIds: [],
-          rootEntryIds: [],
-          leafEntryIds: [],
           shouldFetch: false,
         }
       });

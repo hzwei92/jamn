@@ -27,21 +27,19 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
     onCompleted: (pin) => {
       const entry1: Entry = {
         id: v4(),
+        parentEntryId: entry.id,
+        childEntryIds: [],
         postId: pin.rootPostId,
         profileId: pin.rootPost.profileId,
-        parentEntryId: entry.id,
         linkId: null,
         pinId: pin.id,
+        tabId: null,
         showDirection: null,
-        prevEntryIds: [],
-        nextEntryIds: [],
-        rootEntryIds: [],
-        leafEntryIds: [],
         shouldFetch: false,
       }
       const entry2: Entry = {
         ...entry,
-        rootEntryIds: [entry1.id, ...entry.rootEntryIds],
+        childEntryIds: [entry1.id, ...entry.childEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
@@ -53,23 +51,21 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
       const entries: Entry[] = pins.map((pin) => {
         return {
           id: v4(),
+          parentEntryId: entry.id,
+          childEntryIds: [],
           postId: pin.rootPostId,
           profileId: pin.rootPost.profileId,
-          parentEntryId: entry.id,
           linkId: null,
           pinId: pin.id,
+          tabId: null,
           showDirection: null,
-          prevEntryIds: [],
-          nextEntryIds: [],
-          rootEntryIds: [],
-          leafEntryIds: [],
           shouldFetch: false,
         };
       });
 
       const entry1: Entry = {
         ...entry,
-        rootEntryIds: entries.map((entry) => entry.id),
+        childEntryIds: entries.map((entry) => entry.id),
       };
 
       entries.push(entry1);
@@ -127,6 +123,7 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
         <IonButtons style={{
         }}>
           <IonButton onClick={handleCreateClick} style={{
+            marginRight: 10,
             display: connectionPostIds.length === 1 ? 'none' : null,
             borderRadius: 5,
             backgroundColor: '#f4900c',
@@ -134,8 +131,11 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
           }}>
             <IonIcon icon={addOutline} />
           </IonButton>
-          <IonButton onClick={handleConnectClick} disabled={!profile || connectionPost?.profileId !== profile.id} style={{
-            display: connectionPostIds.length === 1 ? null : 'none',
+          <IonButton disabled={connectionPost?.profileId !== profile?.id} onClick={handleConnectClick} style={{
+            marginRight: 10,
+            display: connectionPostIds.length === 1 
+              ? null
+              : 'none',
             borderRadius: 5,
             backgroundColor: '#f4900c',
             color: 'white',
@@ -146,7 +146,6 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
           </IonButton>
         </IonButtons>
         <div style={{
-          marginLeft: 10,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -156,7 +155,7 @@ const RootPins = ({ entry, post, depth }: RootPinsProps) => {
         </div>
       </div>
       {
-        entry.rootEntryIds.map((entryId) => {
+        entry.childEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )

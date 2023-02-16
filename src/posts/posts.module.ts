@@ -9,6 +9,7 @@ import { PinsModule } from 'src/pins/pins.module';
 import { VotesModule } from 'src/votes/votes.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { TabsModule } from 'src/tabs/tabs.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
     LinksModule,
     PinsModule,
     VotesModule,
+    TabsModule,
   ],
   providers: [PostsService, PostsResolver],
   exports: [PostsService],

@@ -46,6 +46,15 @@ export class Profile {
   @Column({ default: 0 })
   postCount: number;
 
+  @Column({ default: 0 })
+  tabCount: number;
+
+  @Column({ default: 0 })
+  leaderCount: number;
+
+  @Column({ default: 0 })
+  followerCount: number;
+
   @CreateDateColumn()
   createDate: Date;
 

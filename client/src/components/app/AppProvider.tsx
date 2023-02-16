@@ -31,7 +31,6 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
 
   const [creationEntryId, setCreationEntryId] = useState<string | null>(null);
-
   const [creationDirection, setCreationDirection] = useState<PostDirection | null>(null);
 
   const [connectionPostIds, setConnectionPostIds] = useState<string[]>([]);

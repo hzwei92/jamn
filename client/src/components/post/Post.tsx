@@ -20,6 +20,8 @@ import { Entry } from "../../types/entry";
 import { v4 } from "uuid";
 import useSetCurrentProfileIndexPost from "../../hooks/profile/useSetCurrentProfileIndexPost";
 import useVote from "../../hooks/vote/useVote";
+import useDeleteTab from "../../hooks/tab/useDeleteTab";
+import { selectTabById } from "../../redux/tabSlice";
 
 interface PostProps {
   entryId: string;
@@ -35,6 +37,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
   const vote = useVote();
   
   const deletePin = useDeletePin();
+  const deleteTab = useDeleteTab();
 
   const { isDarkMode } = useContext(AppContext);
 
@@ -43,6 +46,8 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
 
   const pin = useAppSelector(state => selectPinById(state, entry?.pinId ?? null));
   const pinRootPost = useAppSelector(state => selectPostById(state, pin?.rootPostId ?? null));
+
+  const tab = useAppSelector(state => selectTabById(state, entry?.tabId ?? null));
 
   const slice = useAppSelector(selectPortalSlice);
 
@@ -71,15 +76,13 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     const entry1: Entry = {
       id: v4(),
       parentEntryId: null,
+      childEntryIds: [],
       postId: null,
       profileId: post?.profileId,
       linkId: null,
       pinId: null,
+      tabId: null,
       showDirection: null,
-      prevEntryIds: [],
-      nextEntryIds: [],
-      rootEntryIds: [],
-      leafEntryIds: [],
       shouldFetch: false,
     }
 
@@ -100,9 +103,13 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     dispatch(pushPortalSlice(slice1));
   }
 
-  const handleDeletePinClick = () => {
-    if (!pin) return;
-    deletePin(pin.id)
+  const handleDeleteClick = () => {
+    if (pin) {
+      deletePin(pin.id)
+    }
+    else if (entry?.tabId) {
+      deleteTab(entry.tabId);
+    }
   }
 
   const handleIndexClick = () => {
@@ -258,10 +265,14 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
             }}>
               <IonIcon icon={returnUpBackOutline} size='small'/>
             </IonButton>
-            <IonButton onClick={handleDeletePinClick} style={{
-                display: !!profile && !!pin && profile.id === pinRootPost?.profileId && depth !== 0
-                  ? null
-                  : 'none',
+            <IonButton onClick={handleDeleteClick} style={{
+                display: 
+                  !!profile && (
+                    (!!pin && profile.id === pinRootPost?.profileId) || 
+                    (!!tab && profile.id === tab.profileId)
+                  ) && depth !== 0
+                    ? null
+                    : 'none',
                 marginLeft: 5,
               }}>
                 <IonIcon icon={closeOutline} size='small'/>

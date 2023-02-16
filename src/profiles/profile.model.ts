@@ -33,6 +33,15 @@ export class Profile {
   @Field(() => Int)
   postCount: number;
 
+  @Field(() => Int)
+  tabCount: number;
+  
+  @Field(() => Int)
+  leaderCount: number;
+
+  @Field(() => Int)
+  followerCount: number;
+  
   @Field()
   createDate: Date;
 

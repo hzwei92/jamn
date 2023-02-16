@@ -4,6 +4,7 @@ export enum PostDirection {
   NEXT = 'NEXT',
   ROOT = 'ROOT',
   LEAF = 'LEAF',
+  TAB = 'TAB',
 };
 
 export enum ProfileFilter {
