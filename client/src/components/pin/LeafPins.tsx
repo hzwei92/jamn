@@ -59,7 +59,7 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
         .map((pin) => {
           entries.push({
             id: v4(),
-            postId: pin.rootPostId,
+            postId: pin.leafPostId,
             profileId: null,
             linkId: null,
             pinId: pin.id,
