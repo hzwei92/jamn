@@ -5,7 +5,7 @@ import CreatePostFab from "./CreatePostFab";
 import { Entry } from "../../types/entry";
 import { v4 } from "uuid";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { mergeEntries } from "../../redux/entrySlice";
+import { mergeEntries, selectIdToEntry } from "../../redux/entrySlice";
 import { PortalSlice } from "../../types/portal";
 import { ProfileFilter } from "../../enums";
 import { pushPortalSlice, selectPortalSlice, splicePortalSlice } from "../../redux/portalSlice";
@@ -19,24 +19,33 @@ const Portal = () => {
 
   const slice = useAppSelector(selectPortalSlice);
 
+  const idToEntry = useAppSelector(selectIdToEntry);
+
   const getPosts = useGetPosts({
     onCompleted: (posts) => {
       if (posts.length === 0) return;
 
-      const entries: Entry[] = posts.map((post) => {
-        return {
-          id: v4(),
-          parentEntryId: null,
-          childEntryIds: [],
-          postId: post.id,
-          profileId: post.profileId,
-          linkId: null,
-          pinId: null,
-          tabId: null,
-          showDirection: null,
-          shouldFetch: false,
-        }
-      });
+      const entries: Entry[] = (slice?.entryIds ?? []).map((entryId) => idToEntry[entryId]);
+      
+      posts
+        .filter((post) => !entries.some((entry) => entry.postId === post.id))
+        .forEach((post) => {
+          entries.push({
+            id: v4(),
+            postId: post.id,
+            profileId: post.profileId,
+            linkId: null,
+            pinId: null,
+            tabId: null,
+            showDirection: null,
+            prevEntryIds: [],
+            nextEntryIds: [],
+            rootEntryIds: [],
+            leafEntryIds: [],
+            tabEntryIds: [],
+            shouldFetch: false,
+          })
+        });
 
       dispatch(mergeEntries(entries));
 

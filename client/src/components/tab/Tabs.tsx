@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
 import useCreateTab from "../../hooks/tab/useCreateTab";
 import useGetTabs from "../../hooks/tab/useGetTabs";
-import { mergeEntries } from "../../redux/entrySlice";
+import { mergeEntries, selectIdToEntry } from "../../redux/entrySlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
@@ -26,46 +26,58 @@ const Tabs = ({ entry, profile, depth }: TabsProps) => {
     onCompleted: (tab) => {
       const entry1: Entry = {
         id: v4(),
-        parentEntryId: entry.id,
-        childEntryIds: [],
         postId: tab.post.id,
-        profileId: tab.post.profileId,
+        profileId: null,
         linkId: null,
         pinId: null,
         tabId: tab.id,
         showDirection: null,
+        prevEntryIds: [],
+        nextEntryIds: [],
+        rootEntryIds: [],
+        leafEntryIds: [],
+        tabEntryIds: [],
         shouldFetch: false,
       };
 
       const entry2: Entry = {
         ...entry,
-        childEntryIds: [entry1.id, ...entry.childEntryIds],
+        tabEntryIds: [entry1.id, ...entry.tabEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
     }
   })
 
+  const idToEntry = useAppSelector(selectIdToEntry);
+
   const getTabs = useGetTabs({
     onCompleted: (tabs) => {
-      const entries: Entry[] = tabs.map((tab) => {
-        return {
-          id: v4(),
-          parentEntryId: entry.id,
-          childEntryIds: [],
-          postId: tab.post.id,
-          profileId: tab.post.profileId,
-          linkId: null,
-          pinId: null,
-          tabId: tab.id,
-          showDirection: null,
-          shouldFetch: false,
-        }
-      });
+      const entries: Entry[] = entry.tabEntryIds.map((entryId) => idToEntry[entryId]);
+      
+      tabs
+        .filter(tab => !entries.some(entry => entry.tabId === tab.id))
+        .forEach((tab) => {
+          entries.push({
+            id: v4(),
+            postId: tab.post.id,
+            profileId: null,
+            linkId: null,
+            pinId: null,
+            tabId: tab.id,
+            showDirection: null,
+            prevEntryIds: [],
+            nextEntryIds: [],
+            rootEntryIds: [],
+            leafEntryIds: [],
+            tabEntryIds: [],
+            shouldFetch: false,
+          });
+        });
 
       const entry1: Entry = {
         ...entry,
-        childEntryIds: entries.map((entry) => entry.id),
+        tabEntryIds: entries.map((entry) => entry.id),
       }
 
       entries.push(entry1);
@@ -83,7 +95,7 @@ const Tabs = ({ entry, profile, depth }: TabsProps) => {
   } = useContext(AppContext);
 
   useEffect(() => {
-    if (!entry.shouldFetch) return;
+    if (!entry.shouldFetch || !entry.profileId) return;
 
     getTabs(entry.profileId);
 
@@ -155,7 +167,7 @@ const Tabs = ({ entry, profile, depth }: TabsProps) => {
       </div>
       </div>
       {
-        entry.childEntryIds.map((entryId) => {
+        entry.tabEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )

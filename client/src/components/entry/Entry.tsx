@@ -32,9 +32,11 @@ const Entry = ({ entryId, depth }: EntryProps) => {
   const pin = useAppSelector(state => selectPinById(state, entry?.pinId ?? null));
   const tab = useAppSelector(state => selectTabById(state, entry?.tabId ?? null));
 
-  if (!entry || !profile || link?.deleteDate || pin?.deleteDate || tab?.deleteDate) return null;
+  if (!entry || link?.deleteDate || pin?.deleteDate || tab?.deleteDate) return null;
 
   if (!post) {
+    if (!profile) return null;
+    
     return (
       <div>
         <Profile entryId={entryId} profileId={profile.id} depth={depth} />

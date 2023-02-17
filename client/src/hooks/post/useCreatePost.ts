@@ -137,14 +137,17 @@ const useCreatePost = () => {
 
       const entry: Entry = {
         id: v4(),
-        parentEntryId: creationEntry?.id ?? null,
-        childEntryIds: [],
         postId: newPost.id,
         profileId: newPost.profileId,
         linkId: prevLink?.id ?? nextLink?.id ?? null,
         pinId: rootPin?.id ?? leafPin?.id ?? null,
         tabId: tab?.id ?? null,
         showDirection: null,
+        prevEntryIds: [],
+        nextEntryIds: [],
+        rootEntryIds: [],
+        leafEntryIds: [],
+        tabEntryIds: [],
         shouldFetch: false,
       };
 
@@ -153,9 +156,21 @@ const useCreatePost = () => {
       if (creationEntry) {
         const creationEntry1: Entry = {
           ...creationEntry,
-          childEntryIds: prevLink || nextLink || rootPin || leafPin || tab
-            ? [entry.id, ...creationEntry.childEntryIds]
-            : creationEntry.childEntryIds,
+          prevEntryIds: prevLink
+            ? [entry.id, ...creationEntry.prevEntryIds]
+            : creationEntry.prevEntryIds,
+          nextEntryIds: nextLink
+            ? [entry.id, ...creationEntry.nextEntryIds]
+            : creationEntry.nextEntryIds,
+          rootEntryIds: rootPin
+            ? [entry.id, ...creationEntry.rootEntryIds]
+            : creationEntry.rootEntryIds,
+          leafEntryIds: leafPin
+            ? [entry.id, ...creationEntry.leafEntryIds]
+            : creationEntry.leafEntryIds,
+          tabEntryIds: tab
+            ? [entry.id, ...creationEntry.tabEntryIds]
+            : creationEntry.tabEntryIds,
         };
 
         dispatch(mergeEntries([creationEntry1]));

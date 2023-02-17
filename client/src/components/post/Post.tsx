@@ -72,14 +72,17 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
     if (!post) return;
     const entry1: Entry = {
       id: v4(),
-      parentEntryId: null,
-      childEntryIds: [],
       postId: null,
       profileId: post?.profileId,
       linkId: null,
       pinId: null,
       tabId: null,
       showDirection: null,
+      prevEntryIds: [],
+      nextEntryIds: [],
+      rootEntryIds: [],
+      leafEntryIds: [],
+      tabEntryIds: [],
       shouldFetch: false,
     }
 
@@ -223,7 +226,7 @@ const Post = ({ entryId, postId, depth }: PostProps) => {
         </div>
         <div style={{
           marginLeft: 5,
-          marginBottom: 20,
+          marginBottom: 15,
           color: isDarkMode
             ? 'white'
             : 'black',

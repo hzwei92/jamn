@@ -35,14 +35,17 @@ const AppBarLeft = () => {
       const entries = posts.map((post) => {
         const entry: Entry = {
           id: v4(),
-          parentEntryId: null,
-          childEntryIds: [],
           postId: post.id,
-          profileId: post.profileId,
+          profileId: null,
           linkId: null,
           pinId: null,
           tabId: null,
           showDirection: null,
+          prevEntryIds: [],
+          nextEntryIds: [],
+          rootEntryIds: [],
+          leafEntryIds: [],
+          tabEntryIds: [],
           shouldFetch: false,
         };
         return entry;

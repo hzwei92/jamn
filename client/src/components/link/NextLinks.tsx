@@ -1,11 +1,11 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { add, addOutline, arrowForwardOutline } from "ionicons/icons";
+import { addOutline, arrowForwardOutline } from "ionicons/icons";
 import { useContext, useEffect } from "react";
 import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
 import useCreateLink from "../../hooks/link/useCreateLink";
 import useGetNextLinks from "../../hooks/link/useGetNextLinks";
-import { mergeEntries } from "../../redux/entrySlice";
+import { mergeEntries, selectIdToEntry } from "../../redux/entrySlice";
 import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
@@ -26,46 +26,58 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
     onCompleted: (link) => {
       const entry1: Entry = {
         id: v4(),
-        parentEntryId: entry.id,
-        childEntryIds: [],
         postId: link.nextPostId,
-        profileId: link.nextPost.profileId,
+        profileId: null,
         linkId: link.id,
         pinId: null,
         tabId: null,
         showDirection: null,
+        prevEntryIds: [],
+        nextEntryIds: [],
+        rootEntryIds: [],
+        leafEntryIds: [],
+        tabEntryIds: [],
         shouldFetch: false,
       };
 
       const entry2: Entry = {
         ...entry,
-        childEntryIds: [entry1.id, ...entry.childEntryIds],
+        nextEntryIds: [entry1.id, ...entry.nextEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
     },
   });
 
+  const idToEntry = useAppSelector(selectIdToEntry);
+
   const getNextLinks = useGetNextLinks({
     onCompleted: (links) => {
-      const entries: Entry[] = links.map((link) => {
-        return {
-          id: v4(),
-          parentEntryId: entry.id,
-          childEntryIds: [],
-          postId: link.nextPostId,
-          profileId: link.nextPost.profileId,
-          linkId: link.id,
-          pinId: null,
-          tabId: null,
-          showDirection: null,
-          shouldFetch: false,
-        };
-      });
+      const entries: Entry[] = entry.nextEntryIds.map((id) => idToEntry[id]);
+
+      links
+        .filter((link) => !entries.some((entry) => entry.linkId === link.id))
+        .forEach((link) => {
+          entries.push({
+            id: v4(),
+            postId: link.nextPostId,
+            profileId: null,
+            linkId: link.id,
+            pinId: null,
+            tabId: null,
+            showDirection: null,
+            prevEntryIds: [],
+            nextEntryIds: [],
+            rootEntryIds: [],
+            leafEntryIds: [],
+            tabEntryIds: [],
+            shouldFetch: false,
+          })
+        });
 
       const entry1: Entry = {
         ...entry,
-        childEntryIds: entries.map((entry) => entry.id),
+        nextEntryIds: entries.map((entry) => entry.id),
       };
 
       entries.push(entry1);
@@ -152,7 +164,7 @@ const NextLinks = ({ entry, post, depth }: NextLinksProps) => {
       </div>
       </div>
       {
-        entry.childEntryIds.map((entryId) => {
+        entry.nextEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )

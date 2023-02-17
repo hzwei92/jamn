@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { PostDirection } from "../../enums";
 import useCreatePin from "../../hooks/pin/useCreatePin";
 import useGetLeafPins from "../../hooks/pin/useGetLeafPins";
-import { mergeEntries } from "../../redux/entrySlice";
+import { mergeEntries, selectIdToEntry } from "../../redux/entrySlice";
 import { selectCurrentProfile, selectProfileById } from "../../redux/profileSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { Entry } from "../../types/entry";
@@ -26,45 +26,57 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
     onCompleted: (pin) => {
       const entry1: Entry = {
         id: v4(),
-        parentEntryId: entry.id,
-        childEntryIds: [],
         postId: pin.leafPostId,
-        profileId: pin.leafPost.profileId,
+        profileId: null,
         linkId: null,
         pinId: pin.id,
         tabId: null,
         showDirection: null,
+        prevEntryIds: [],
+        nextEntryIds: [],
+        rootEntryIds: [],
+        leafEntryIds: [],
+        tabEntryIds: [],
         shouldFetch: false,
       }
       const entry2: Entry = {
         ...entry,
-        childEntryIds: [entry1.id, ...entry.childEntryIds],
+        leafEntryIds: [entry1.id, ...entry.leafEntryIds],
       };
 
       dispatch(mergeEntries([entry1, entry2]));
     },
   });
 
+  const idToEntry = useAppSelector(selectIdToEntry);
+
   const getLeafPins = useGetLeafPins({
     onCompleted: (pins) => {
-      const entries: Entry[] = pins.map((pin) => {
-        return {
-          id: v4(),
-          parentEntryId: entry.id,
-          childEntryIds: [],
-          profileId: pin.leafPost.profileId,
-          postId: pin.leafPostId,
-          linkId: null,
-          pinId: pin.id,
-          tabId: null,
-          showDirection: null,
-          shouldFetch: false,
-        };
-      });
+      const entries: Entry[] = entry.leafEntryIds.map((entryId) => idToEntry[entryId]);
+      
+      pins
+        .filter(pin => !entries.some(entry => entry.pinId === pin.id))
+        .map((pin) => {
+          entries.push({
+            id: v4(),
+            postId: pin.rootPostId,
+            profileId: null,
+            linkId: null,
+            pinId: pin.id,
+            tabId: null,
+            showDirection: null,
+            prevEntryIds: [],
+            nextEntryIds: [],
+            rootEntryIds: [],
+            leafEntryIds: [],
+            tabEntryIds: [],
+            shouldFetch: false,
+          });
+        });
 
       const entry1: Entry = {
         ...entry,
-        childEntryIds: entries.map((entry) => entry.id),
+        leafEntryIds: entries.map((entry) => entry.id),
       };
 
       entries.push(entry1);
@@ -151,7 +163,7 @@ const LeafPins = ({ entry, post, depth }: LeafPinsProps) => {
         </div>
       </div>
       {
-        entry.childEntryIds.map((entryId) => {
+        entry.leafEntryIds.map((entryId) => {
           return (
             <EntryComponent key={entryId} entryId={entryId} depth={depth + 1} />
           )
