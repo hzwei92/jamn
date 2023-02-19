@@ -22,6 +22,10 @@ const useRefreshAccessToken = () => {
   const [refresh] = useMutation(REFRESH_ACCESS_TOKEN, {
     onError: (err) => {
       console.error(err);
+
+      dispatch(setIsValid(false));
+      dispatch(setIsInit(true));
+      dispatch(setRefreshInterval(null));
     },
     onCompleted: async (data) => {
       console.log(data);

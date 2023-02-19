@@ -4,7 +4,7 @@ import md5 from "md5";
 import { useContext } from "react";
 import { v4 } from "uuid";
 import useLogout from "../../hooks/auth/useLogout";
-import { selectIsDone } from "../../redux/authSlice";
+import { selectIsDone, selectIsValid } from "../../redux/authSlice";
 import { mergeEntries } from "../../redux/entrySlice";
 import { back, forward, pushPortalSlice, selectPortalIndex, selectPortalStack } from "../../redux/portalSlice";
 import { selectCurrentProfile } from "../../redux/profileSlice";
@@ -19,6 +19,7 @@ const AppBarTop = () => {
 
   const { isDarkMode, setshowLoginModal } = useContext(AppContext);
 
+  const isValid = useAppSelector(selectIsValid);
   const isDone = useAppSelector(selectIsDone);
   const profile = useAppSelector(selectCurrentProfile);
 
@@ -126,7 +127,7 @@ const AppBarTop = () => {
           marginRight: 5,
         }}>
           {
-            !profile
+            !isValid || !profile
               ? (
                 <IonButton onClick={handleLoginClick} style={{
                   borderRadius: 5,
