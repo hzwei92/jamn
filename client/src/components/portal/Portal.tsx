@@ -10,7 +10,6 @@ import { PortalSlice } from "../../types/portal";
 import { ProfileFilter } from "../../enums";
 import { pushPortalSlice, selectPortalSlice, splicePortalSlice } from "../../redux/portalSlice";
 import EntryComponent from "../entry/Entry";
-import { selectIsDone } from "../../redux/authSlice";
 
 const Portal = () => {
   const dispatch = useAppDispatch();
@@ -26,14 +25,16 @@ const Portal = () => {
       if (posts.length === 0) return;
 
       const entries: Entry[] = (slice?.entryIds ?? []).map((entryId) => idToEntry[entryId]);
+
+      const newEntries: Entry[] = [];
       
       posts
         .filter((post) => !entries.some((entry) => entry.postId === post.id))
         .forEach((post) => {
-          entries.push({
+          const entry: Entry = {
             id: v4(),
             postId: post.id,
-            profileId: post.profileId,
+            profileId: null,
             linkId: null,
             pinId: null,
             tabId: null,
@@ -44,10 +45,13 @@ const Portal = () => {
             leafEntryIds: [],
             tabEntryIds: [],
             shouldFetch: false,
-          })
+          };
+
+          entries.push(entry);
+          newEntries.push(entry);
         });
 
-      dispatch(mergeEntries(entries));
+      dispatch(mergeEntries(newEntries));
 
       if (slice?.dateRange?.startDate && slice?.dateRange?.endDate) {
         const slice1: PortalSlice = {
@@ -56,7 +60,7 @@ const Portal = () => {
             startDate: posts[posts.length - 1].createDate,
             endDate: slice.dateRange.endDate,
           },
-          entryIds: [...slice.entryIds, ...entries.map((entry) => entry.id)],
+          entryIds: entries.map((entry) => entry.id),
         };
 
         dispatch(splicePortalSlice(slice1));
@@ -79,12 +83,9 @@ const Portal = () => {
     }
   });
 
-  const isDone = useAppSelector(selectIsDone);
-  
   useEffect(() => {
-    if (!isDone) return;
     getPosts(null, null);
-  }, [isDone]);
+  }, []);
 
 
   useEffect(() => {
